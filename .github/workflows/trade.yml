@@ -1,0 +1,50 @@
+name: paper-trade
+
+on:
+  # Run 5 minutes after each 4h Binance candle close (UTC).
+  # 4h closes: 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC.
+  schedule:
+    - cron: "5 0,4,8,12,16,20 * * *"
+  workflow_dispatch:        # allow manual run from the Actions tab
+
+permissions:
+  contents: write           # needed to commit state.json back
+
+concurrency:
+  group: paper-trade
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run bot
+        run: python cli.py auto
+
+      - name: Commit updated state
+        run: |
+          git config user.name  "coin-bot"
+          git config user.email "coin-bot@users.noreply.github.com"
+          if ! git diff --quiet -- state.json; then
+            git add state.json
+            git commit -m "auto: $(date -u +'%Y-%m-%d %H:%MZ') run"
+            git push
+          else
+            echo "No state changes."
+          fi
