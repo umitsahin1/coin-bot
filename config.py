@@ -8,9 +8,9 @@ MAX_OPEN_POSITIONS = 2
 PER_POSITION_PCT = 0.50          # split capital across the 2 picks
 TAKER_FEE = 0.001                # Binance spot taker fee, applied per side
 STOP_LOSS_PCT = -0.07            # -7% hard stop
-TAKE_PROFIT_PCT = 0.0            # 0 = disabled. Aggressive mode lets winners run.
-TRAILING_STOP_PCT = 0.08         # sell when price drops 8% from peak
-TRAIL_ACTIVATE_PCT = 0.10        # trailing kicks in only after peak >= +10%
+TAKE_PROFIT_PCT = 0.30           # +30% hard take profit (DENGELI)
+TRAILING_STOP_PCT = 0.07         # sell when price drops 7% from peak
+TRAIL_ACTIVATE_PCT = 0.07        # trailing kicks in once peak >= +7%
 
 # --- Market & data ---
 EXCHANGE_BASE = "https://api.binance.com"
