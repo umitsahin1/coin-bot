@@ -231,48 +231,81 @@ def _print_status_short(state: dict) -> dict:
 
 # ---------- Telegram message formatting ----------
 
+_SIGNAL_TR = {
+    "BUY": "GÜÇLÜ AL",
+    "WEAK_BUY": "ZAYIF AL",
+    "NEUTRAL": "NÖTR",
+    "WEAK_SELL": "ZAYIF SAT",
+    "SELL": "GÜÇLÜ SAT",
+}
+
+
+def _tr_signal(sig: str) -> str:
+    return _SIGNAL_TR.get(sig, sig)
+
+
+def _tr_reason(reason: str) -> str:
+    """Translate internal reason strings to Turkish at the display boundary.
+    Kept separate so state.json keeps stable English keys for debugging."""
+    if reason.startswith("STOP_LOSS"):
+        return reason.replace("STOP_LOSS", "ZARAR KES")
+    if reason.startswith("TAKE_PROFIT"):
+        return reason.replace("TAKE_PROFIT", "KÂR AL")
+    if reason.startswith("TRAILING_STOP from peak"):
+        return reason.replace("TRAILING_STOP from peak", "TRAILING zirveden")
+    if reason == "open":
+        return "yeni pozisyon"
+    if reason == "replacement":
+        return "yer değiştirme"
+    if reason == "score still strong":
+        return "skor güçlü"
+    if reason.startswith("weak signal"):
+        return reason.replace("weak signal", "zayıf sinyal").replace("score=", "skor=")
+    return reason
+
+
 def _format_telegram(actions: list[dict], eq: dict,
                     top_scores: list[Score] | None = None) -> str:
-    """Build a Telegram message. Always returns a string (heartbeat on quiet runs)."""
+    """Build a Telegram message in Turkish. Always returns a string (heartbeat on quiet runs)."""
     actionable = [a for a in actions if a["side"] in ("BUY", "SELL")]
     holds = [a for a in actions if a["side"] == "HOLD"]
 
     lines = []
     if actionable:
-        lines.append("<b>🔔 Coin Bot — sinyal</b>")
+        lines.append("<b>🔔 Coin Bot — Sinyal</b>")
     elif holds:
-        lines.append("<b>📊 Coin Bot — durum (hold)</b>")
+        lines.append("<b>📊 Coin Bot — Durum (Tut)</b>")
     else:
-        lines.append("<b>⏳ Coin Bot — tarama (işlem yok)</b>")
+        lines.append("<b>⏳ Coin Bot — Tarama (İşlem Yok)</b>")
 
     for a in actions:
         sym = a["symbol"]
         if a["side"] == "BUY":
-            lines.append(f"🟢 BUY <b>{sym}</b> @ {a['price']:.6g}  "
-                         f"score={a['score']} {a['signal']}  "
-                         f"alloc=${a['alloc_usdt']:.2f}  ({a['reason']})")
+            lines.append(f"🟢 AL <b>{sym}</b> @ {a['price']:.6g}  "
+                         f"skor={a['score']} {_tr_signal(a['signal'])}  "
+                         f"tutar=${a['alloc_usdt']:.2f}  ({_tr_reason(a['reason'])})")
         elif a["side"] == "SELL":
             pnl = a["pnl_usdt"]
             emoji = "🔴" if pnl < 0 else "🟢"
-            lines.append(f"{emoji} SELL <b>{sym}</b> @ {a['price']:.6g}  "
-                         f"pnl=${pnl:+.2f} ({a['pnl_pct']:+.2f}%)  ({a['reason']})")
+            lines.append(f"{emoji} SAT <b>{sym}</b> @ {a['price']:.6g}  "
+                         f"kâr=${pnl:+.2f} ({a['pnl_pct']:+.2f}%)  ({_tr_reason(a['reason'])})")
         elif a["side"] == "HOLD":
-            lines.append(f"⏸ HOLD <b>{sym}</b> @ {a['price']:.6g}  "
-                         f"score={a['score']}  pnl={a['pnl_pct']:+.2f}%")
+            lines.append(f"⏸ TUT <b>{sym}</b> @ {a['price']:.6g}  "
+                         f"skor={a['score']}  kâr={a['pnl_pct']:+.2f}%")
 
     # If there were no actions, show the top candidates so user sees
     # what the bot is "looking at" and why it's sitting still.
     if not actions and top_scores:
-        lines.append("<i>en yüksek skorlar (BUY eşik=" + str(config.BUY_SCORE_MIN) + "):</i>")
+        lines.append("<i>en yüksek skorlar (AL eşiği=" + str(config.BUY_SCORE_MIN) + "):</i>")
         for sc in top_scores[:5]:
-            lines.append(f"  • {sc.symbol}  score={sc.score}  {sc.signal}  "
+            lines.append(f"  • {sc.symbol}  skor={sc.score}  {_tr_signal(sc.signal)}  "
                          f"@{sc.snapshot.close:.6g}")
 
     lines.append("")
     lines.append(
-        f"💼 equity=${eq['total_equity']:.2f}  "
-        f"cash=${eq['cash']:.2f}  "
-        f"return={eq['total_return_pct']:+.2f}%"
+        f"💼 varlık=${eq['total_equity']:.2f}  "
+        f"nakit=${eq['cash']:.2f}  "
+        f"getiri={eq['total_return_pct']:+.2f}%"
     )
     return "\n".join(lines)
 
