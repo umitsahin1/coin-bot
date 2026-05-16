@@ -139,7 +139,7 @@ def _do_check(state: dict) -> list[dict]:
         forced = None
         if pnl_pct <= config.STOP_LOSS_PCT:
             forced = f"STOP_LOSS {pnl_pct*100:.2f}%"
-        elif pnl_pct >= config.TAKE_PROFIT_PCT:
+        elif config.TAKE_PROFIT_PCT > 0 and pnl_pct >= config.TAKE_PROFIT_PCT:
             forced = f"TAKE_PROFIT {pnl_pct*100:.2f}%"
         elif portfolio.trailing_stop_hit(pos, price):
             forced = f"TRAILING_STOP from peak {pos['peak_price']:.6g}"

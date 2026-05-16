@@ -102,9 +102,9 @@ def position_pnl_pct(pos: dict, price: float) -> float:
 
 
 def trailing_stop_hit(pos: dict, price: float) -> bool:
-    """Trailing stop: only active once peak gain >= TP/2; then sell on retrace."""
+    """Trailing stop: only active once peak gain >= TRAIL_ACTIVATE_PCT; then sell on retrace."""
     peak_gain = (pos["peak_price"] - pos["entry_price"]) / pos["entry_price"]
-    if peak_gain < config.TAKE_PROFIT_PCT / 2:
+    if peak_gain < config.TRAIL_ACTIVATE_PCT:
         return False
     drop = (price - pos["peak_price"]) / pos["peak_price"]
     return drop <= -config.TRAILING_STOP_PCT
