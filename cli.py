@@ -64,8 +64,8 @@ def _scan_universe(symbols: Iterable[str]) -> list[Score]:
     return scores
 
 
-def _do_scan(state: dict) -> list[dict]:
-    """Open positions to fill empty slots. Returns action records."""
+def _do_scan(state: dict) -> tuple[list[dict], list[Score]]:
+    """Open positions to fill empty slots. Returns (actions, top_scores)."""
     actions: list[dict] = []
     universe = data.list_universe()
     print(f"Universe: top {len(universe)} USDT pairs by 24h volume.")
@@ -73,7 +73,7 @@ def _do_scan(state: dict) -> list[dict]:
     scores = _scan_universe(syms)
     if not scores:
         print("No scored candidates.")
-        return actions
+        return actions, []
 
     print("\nTop 10:")
     for i, sc in enumerate(scores[:10], 1):
@@ -82,13 +82,13 @@ def _do_scan(state: dict) -> list[dict]:
     open_slots = config.MAX_OPEN_POSITIONS - len(state["positions"])
     if open_slots <= 0:
         print(f"\nAll {config.MAX_OPEN_POSITIONS} slots filled.")
-        return actions
+        return actions, scores[:5]
 
     candidates = [s for s in scores if s.symbol not in state["positions"]
                   and s.score >= config.BUY_SCORE_MIN][:open_slots]
     if not candidates:
         print(f"\nNo candidate scored >= {config.BUY_SCORE_MIN}. No trades.")
-        return actions
+        return actions, scores[:5]
 
     alloc_each = state["cash"] / len(candidates)
     print(f"\nOpening {len(candidates)} paper position(s):")
@@ -105,7 +105,7 @@ def _do_scan(state: dict) -> list[dict]:
         actions.append({"side": "BUY", "symbol": sc.symbol, "price": price,
                         "score": sc.score, "signal": sc.signal,
                         "alloc_usdt": alloc_each, "reason": "open"})
-    return actions
+    return actions, scores[:5]
 
 
 def _do_check(state: dict) -> list[dict]:
@@ -231,19 +231,19 @@ def _print_status_short(state: dict) -> dict:
 
 # ---------- Telegram message formatting ----------
 
-def _format_telegram(actions: list[dict], eq: dict) -> str | None:
-    """Build a Telegram message. Returns None if there's nothing worth sending."""
+def _format_telegram(actions: list[dict], eq: dict,
+                    top_scores: list[Score] | None = None) -> str:
+    """Build a Telegram message. Always returns a string (heartbeat on quiet runs)."""
     actionable = [a for a in actions if a["side"] in ("BUY", "SELL")]
     holds = [a for a in actions if a["side"] == "HOLD"]
-    # Skip noisy "all-hold" runs unless equity is explicitly requested
-    if not actionable and not holds:
-        return None
 
     lines = []
     if actionable:
         lines.append("<b>🔔 Coin Bot — sinyal</b>")
+    elif holds:
+        lines.append("<b>📊 Coin Bot — durum (hold)</b>")
     else:
-        lines.append("<b>📊 Coin Bot — durum</b>")
+        lines.append("<b>⏳ Coin Bot — tarama (işlem yok)</b>")
 
     for a in actions:
         sym = a["symbol"]
@@ -260,6 +260,14 @@ def _format_telegram(actions: list[dict], eq: dict) -> str | None:
             lines.append(f"⏸ HOLD <b>{sym}</b> @ {a['price']:.6g}  "
                          f"score={a['score']}  pnl={a['pnl_pct']:+.2f}%")
 
+    # If there were no actions, show the top candidates so user sees
+    # what the bot is "looking at" and why it's sitting still.
+    if not actions and top_scores:
+        lines.append("<i>en yüksek skorlar (BUY eşik=" + str(config.BUY_SCORE_MIN) + "):</i>")
+        for sc in top_scores[:5]:
+            lines.append(f"  • {sc.symbol}  score={sc.score}  {sc.signal}  "
+                         f"@{sc.snapshot.close:.6g}")
+
     lines.append("")
     lines.append(
         f"💼 equity=${eq['total_equity']:.2f}  "
@@ -275,11 +283,11 @@ def cmd_scan() -> int:
     state = portfolio.load()
     print(f"=== SCAN ===  cash={_fmt_money(state['cash'])}  "
           f"holding={list(state['positions'].keys()) or 'none'}")
-    actions = _do_scan(state)
+    actions, top = _do_scan(state)
     portfolio.save(state)
     eq = _print_status_short(state)
-    msg = _format_telegram(actions, eq)
-    if msg and notify.is_configured():
+    msg = _format_telegram(actions, eq, top_scores=top)
+    if notify.is_configured():
         notify.send(msg)
     return 0
 
@@ -294,7 +302,7 @@ def cmd_check() -> int:
     portfolio.save(state)
     eq = _print_status_short(state)
     msg = _format_telegram(actions, eq)
-    if msg and notify.is_configured():
+    if notify.is_configured():
         notify.send(msg)
     if not [a for a in actions if a["side"] != "HOLD"]:
         print("\nNo actions this round.")
@@ -304,18 +312,19 @@ def cmd_check() -> int:
 def cmd_auto() -> int:
     """One command for the cron: scan if empty, otherwise check."""
     state = portfolio.load()
+    top: list[Score] = []
     if not state["positions"]:
         print("=== AUTO (initial scan) ===")
-        actions = _do_scan(state)
+        actions, top = _do_scan(state)
     else:
         print("=== AUTO (check) ===")
         actions = _do_check(state)
     portfolio.save(state)
     eq = _print_status_short(state)
-    msg = _format_telegram(actions, eq)
-    if msg and notify.is_configured():
+    msg = _format_telegram(actions, eq, top_scores=top)
+    if notify.is_configured():
         notify.send(msg)
-    elif msg:
+    else:
         print("\n[notify] Telegram not configured — skipped.")
     return 0
 

@@ -17,7 +17,7 @@ QUOTE_ASSET = "USDT"
 TIMEFRAME = "4h"
 KLINE_LIMIT = 200                # ~33 days of 4h bars, enough for ADX/MA200 ~ish
 UNIVERSE_SIZE = 50               # top N USDT pairs by 24h quote volume
-MIN_QUOTE_VOLUME_USDT = 20_000_000
+MIN_QUOTE_VOLUME_USDT = 10_000_000
 EXCLUDE_QUOTES = ("UPUSDT", "DOWNUSDT", "BULLUSDT", "BEARUSDT")  # leveraged tokens
 EXCLUDE_STABLES = ("USDCUSDT", "BUSDUSDT", "TUSDUSDT", "FDUSDUSDT", "DAIUSDT", "USDPUSDT")
 

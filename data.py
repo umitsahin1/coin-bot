@@ -1,13 +1,16 @@
-"""Bybit v5 spot market data fetching. No API key required.
+"""OKX v5 spot market data fetching. No API key required.
 
-We use Bybit instead of Binance because Binance returns HTTP 451 to
-GitHub-hosted runners (US IPs). Bybit's public market API is reachable
-from US IPs and exposes the same USDT spot pairs.
+We use OKX (not Binance / Bybit) because both of those geo-block public
+market endpoints from GitHub-hosted runners (US IPs). OKX's market data
+API is globally reachable, and its USDT spot universe is comparable.
+
+Internal symbols stay in `BTCUSDT` form (the format stored in state.json
+and used by the rest of the codebase). Conversion to OKX's `BTC-USDT`
+happens at the boundary inside this module only.
 """
 
 from __future__ import annotations
 
-import time
 from typing import Iterable
 
 import pandas as pd
@@ -16,120 +19,118 @@ import requests
 import config
 
 
-BYBIT_BASE = "https://api.bybit.com"
+OKX_BASE = "https://www.okx.com"
 
-# We use Bybit USDT-margined linear perpetuals (`linear`) instead of spot
-# because Bybit's spot order book is thin -- only a handful of pairs clear
-# our volume filter. Perp prices track spot via funding arbitrage, so for
-# a paper-trading bot reading OHLCV it makes no practical difference.
-_CATEGORY = "linear"
-
-# Map our human-readable timeframe to Bybit's interval string.
-_INTERVAL_MAP = {
-    "1m": "1", "3m": "3", "5m": "5", "15m": "15", "30m": "30",
-    "1h": "60", "2h": "120", "4h": "240", "6h": "360", "12h": "720",
-    "1d": "D", "1w": "W", "1M": "M",
+# Map our human-readable timeframe to OKX's bar string (uppercase H/D).
+_BAR_MAP = {
+    "1m": "1m", "3m": "3m", "5m": "5m", "15m": "15m", "30m": "30m",
+    "1h": "1H", "2h": "2H", "4h": "4H", "6h": "6H", "12h": "12H",
+    "1d": "1D", "1w": "1W", "1M": "1M",
 }
 
-# Bybit interval -> milliseconds, used to compute close_time so we can
-# drop the in-progress candle deterministically.
-_INTERVAL_MS = {
-    "1": 60_000, "3": 180_000, "5": 300_000, "15": 900_000, "30": 1_800_000,
-    "60": 3_600_000, "120": 7_200_000, "240": 14_400_000,
-    "360": 21_600_000, "720": 43_200_000,
-    "D": 86_400_000, "W": 604_800_000,
-}
+# Suffixes that mark leveraged / structured tokens we want to skip.
+# These match exactly before "USDT" so they don't false-positive on
+# legit coins like JUPUSDT (contains "UP" but ends with "JUPUSDT").
+_LEVERAGE_SUFFIXES = ("2L", "2S", "3L", "3S", "5L", "5S", "UP", "DOWN", "BULL", "BEAR")
 
 
 _SESSION = requests.Session()
-_SESSION.headers.update({"User-Agent": "coin-paper-bot/0.2"})
+_SESSION.headers.update({"User-Agent": "coin-paper-bot/0.3"})
+
+
+def _to_okx(symbol: str) -> str:
+    """BTCUSDT -> BTC-USDT (OKX format)."""
+    if symbol.endswith("USDT"):
+        return f"{symbol[:-4]}-USDT"
+    if symbol.endswith("USDC"):
+        return f"{symbol[:-4]}-USDC"
+    return symbol
+
+
+def _from_okx(inst_id: str) -> str:
+    """BTC-USDT -> BTCUSDT (internal format)."""
+    return inst_id.replace("-", "")
 
 
 def _get(path: str, params: dict | None = None, timeout: int = 15) -> dict:
-    url = f"{BYBIT_BASE}{path}"
+    url = f"{OKX_BASE}{path}"
     r = _SESSION.get(url, params=params, timeout=timeout)
     r.raise_for_status()
     js = r.json()
-    if js.get("retCode") != 0:
-        raise RuntimeError(f"Bybit error {js.get('retCode')}: {js.get('retMsg')}")
+    if str(js.get("code", "")) != "0":
+        raise RuntimeError(f"OKX error code={js.get('code')} msg={js.get('msg')}")
     return js
 
 
 def _is_leveraged_token(symbol: str) -> bool:
-    # Bybit leveraged tokens look like BTC3LUSDT, ETH2SUSDT, etc.
-    for tag in ("2L", "2S", "3L", "3S", "5L", "5S", "UP", "DOWN", "BULL", "BEAR"):
-        if f"{tag}USDT" in symbol and symbol.endswith("USDT"):
-            return True
-    return False
+    # symbol is in internal form, e.g. BTCUSDT or BTC3LUSDT.
+    if not symbol.endswith("USDT"):
+        return False
+    base = symbol[:-4]   # e.g. "BTC", "BTC3L", "JUP"
+    return any(base.endswith(suf) for suf in _LEVERAGE_SUFFIXES)
 
 
 def list_universe() -> list[dict]:
-    """Top-N USDT linear perpetuals by 24h quote turnover."""
-    js = _get("/v5/market/tickers", {"category": _CATEGORY})
+    """Top-N USDT spot pairs by 24h quote volume."""
+    js = _get("/api/v5/market/tickers", {"instType": "SPOT"})
     rows = []
-    for t in js["result"]["list"]:
-        sym = t["symbol"]
-        if not sym.endswith(config.QUOTE_ASSET):
+    for t in js.get("data", []):
+        inst = t.get("instId", "")
+        if not inst.endswith("-USDT"):
             continue
+        sym = _from_okx(inst)
         if sym in config.EXCLUDE_STABLES:
             continue
         if _is_leveraged_token(sym):
             continue
-        # Skip perp multiplier tickers like 1000PEPEUSDT, 10000LADYSUSDT --
-        # the price reference is the multiplied token, which complicates
-        # interpretation. The base coin is still tradable elsewhere.
-        if sym[0].isdigit():
-            continue
         try:
-            turnover = float(t.get("turnover24h", "0"))
-            last = float(t.get("lastPrice", "0"))
+            qv = float(t.get("volCcy24h", "0") or 0)
+            last = float(t.get("last", "0") or 0)
         except (TypeError, ValueError):
             continue
-        if turnover < config.MIN_QUOTE_VOLUME_USDT or last <= 0:
+        if qv < config.MIN_QUOTE_VOLUME_USDT or last <= 0:
             continue
-        rows.append({"symbol": sym, "quote_volume": turnover, "last": last})
+        rows.append({"symbol": sym, "quote_volume": qv, "last": last})
     rows.sort(key=lambda r: r["quote_volume"], reverse=True)
     return rows[: config.UNIVERSE_SIZE]
 
 
 def fetch_klines(symbol: str, interval: str = config.TIMEFRAME,
                  limit: int = config.KLINE_LIMIT) -> pd.DataFrame:
-    """Return closed OHLCV bars only. Drops the in-progress (latest) candle."""
-    bybit_iv = _INTERVAL_MAP.get(interval, interval)
-    js = _get(
-        "/v5/market/kline",
-        {"category": _CATEGORY, "symbol": symbol, "interval": bybit_iv, "limit": limit},
-    )
-    raw = js["result"]["list"]
+    """Return closed OHLCV bars only. OKX marks in-progress bars with confirm=0."""
+    bar = _BAR_MAP.get(interval, interval)
+    js = _get("/api/v5/market/candles",
+              {"instId": _to_okx(symbol), "bar": bar, "limit": str(limit)})
+    raw = js.get("data", [])
     if not raw:
         return pd.DataFrame()
 
-    # Bybit returns newest-first; we want chronological (oldest-first).
+    # OKX returns newest-first; we want chronological (oldest-first).
     rows = list(reversed(raw))
-    cols = ["open_time", "open", "high", "low", "close", "volume", "turnover"]
+    # OKX candle: [ts, o, h, l, c, vol, volCcy, volCcyQuote, confirm]
+    cols = ["open_time", "open", "high", "low", "close",
+            "volume", "vol_ccy", "vol_ccy_quote", "confirm"]
     df = pd.DataFrame(rows, columns=cols)
+
+    # Drop in-progress bar (confirm == "0").
+    df = df[df["confirm"] == "1"].reset_index(drop=True)
+    if df.empty:
+        return df
+
     df["open_time"] = pd.to_numeric(df["open_time"]).astype("int64")
-    for c in ("open", "high", "low", "close", "volume", "turnover"):
+    for c in ("open", "high", "low", "close", "volume", "vol_ccy_quote"):
         df[c] = df[c].astype(float)
-
-    # Compute close_time = open_time + interval_ms; drop in-progress.
-    step = _INTERVAL_MS.get(bybit_iv, 0)
-    df["close_time"] = df["open_time"] + step
-    now_ms = int(time.time() * 1000)
-    df = df[df["close_time"] <= now_ms].reset_index(drop=True)
-
+    df["quote_volume"] = df["vol_ccy_quote"]      # USDT volume of the bar
     df["open_time"] = pd.to_datetime(df["open_time"], unit="ms", utc=True)
-    df["close_time"] = pd.to_datetime(df["close_time"], unit="ms", utc=True)
-    df["quote_volume"] = df["turnover"]
     return df
 
 
 def fetch_last_price(symbol: str) -> float:
-    js = _get("/v5/market/tickers", {"category": _CATEGORY, "symbol": symbol})
-    lst = js["result"]["list"]
-    if not lst:
+    js = _get("/api/v5/market/ticker", {"instId": _to_okx(symbol)})
+    data = js.get("data", [])
+    if not data:
         raise RuntimeError(f"no ticker for {symbol}")
-    return float(lst[0]["lastPrice"])
+    return float(data[0]["last"])
 
 
 def fetch_many_klines(symbols: Iterable[str]) -> dict[str, pd.DataFrame]:
