@@ -3,12 +3,19 @@
   "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "TRXUSDT": {
-      "qty": 2838.068181818182,
-      "entry_price": 0.352,
-      "entry_time": "2026-05-16T13:27:23+00:00",
-      "peak_price": 0.36551,
-      "cost_usdt": 1000.0
+    "RLUSDUSDT": {
+      "qty": 510.2894228270493,
+      "entry_price": 1.0011,
+      "entry_time": "2026-05-23T09:55:58+00:00",
+      "peak_price": 1.0011,
+      "cost_usdt": 511.3621032954546
+    },
+    "USDGUSDT": {
+      "qty": 510.34040079136776,
+      "entry_price": 1.001,
+      "entry_time": "2026-05-23T09:55:58+00:00",
+      "peak_price": 1.001,
+      "cost_usdt": 511.3621032954546
     }
   },
   "trades": [
@@ -21,6 +28,36 @@
       "fee_usdt": 1.0,
       "pnl_usdt": 0.0,
       "reason": "score=64 WEAK_BUY"
+    },
+    {
+      "time": "2026-05-23T09:55:54+00:00",
+      "side": "SELL",
+      "symbol": "TRXUSDT",
+      "qty": 2838.068181818182,
+      "price": 0.36072,
+      "fee_usdt": 1.0237479545454546,
+      "pnl_usdt": 22.724206590909148,
+      "reason": "signal=WEAK_SELL score=36"
+    },
+    {
+      "time": "2026-05-23T09:55:58+00:00",
+      "side": "BUY",
+      "symbol": "RLUSDUSDT",
+      "qty": 510.2894228270493,
+      "price": 1.0011,
+      "fee_usdt": 0.5113621032954546,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=74 WEAK_BUY"
+    },
+    {
+      "time": "2026-05-23T09:55:58+00:00",
+      "side": "BUY",
+      "symbol": "USDGUSDT",
+      "qty": 510.34040079136776,
+      "price": 1.001,
+      "fee_usdt": 0.5113621032954546,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=66 WEAK_BUY"
     }
   ]
 }
