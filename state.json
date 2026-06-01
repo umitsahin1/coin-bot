@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 510.23793462428597,
   "initial_capital": 1000.0,
   "positions": {
-    "RLUSDUSDT": {
-      "qty": 510.2894228270493,
-      "entry_price": 1.0011,
-      "entry_time": "2026-05-23T09:55:58+00:00",
-      "peak_price": 1.0018,
-      "cost_usdt": 511.3621032954546
-    },
     "USDGUSDT": {
       "qty": 510.34040079136776,
       "entry_price": 1.001,
@@ -58,6 +51,16 @@
       "fee_usdt": 0.5113621032954546,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=66 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-01T13:39:23+00:00",
+      "side": "SELL",
+      "symbol": "RLUSDUSDT",
+      "qty": 510.2894228270493,
+      "price": 1.0009,
+      "fee_usdt": 0.5107486833075936,
+      "pnl_usdt": -1.1241686711686043,
+      "reason": "signal=WEAK_SELL score=39"
     }
   ]
 }
