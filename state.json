@@ -1,8 +1,16 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 776.5885535679816,
+  "cash": 0.0,
   "initial_capital": 1000.0,
-  "positions": {},
+  "positions": {
+    "ALLOUSDT": {
+      "qty": 3064.754542997605,
+      "entry_price": 0.25314,
+      "entry_time": "2026-06-06T10:06:27+00:00",
+      "peak_price": 0.25314,
+      "cost_usdt": 776.5885535679816
+    }
+  },
   "trades": [
     {
       "time": "2026-05-16T13:27:23+00:00",
@@ -143,6 +151,16 @@
       "fee_usdt": 0.7773659194874691,
       "pnl_usdt": -114.63466593456076,
       "reason": "STOP_LOSS -12.69%"
+    },
+    {
+      "time": "2026-06-06T10:06:27+00:00",
+      "side": "BUY",
+      "symbol": "ALLOUSDT",
+      "qty": 3064.754542997605,
+      "price": 0.25314,
+      "fee_usdt": 0.7765885535679816,
+      "pnl_usdt": 0.0,
+      "reason": "score=70 WEAK_BUY"
     }
   ]
 }
