@@ -4,11 +4,18 @@
   "initial_capital": 1000.0,
   "positions": {
     "ALLOUSDT": {
-      "qty": 3058.6280986661527,
-      "entry_price": 0.39067,
-      "entry_time": "2026-06-06T13:48:46+00:00",
-      "peak_price": 0.44568,
-      "cost_usdt": 1196.1103496555615
+      "qty": 1526.2569505484596,
+      "entry_price": 0.35806,
+      "entry_time": "2026-06-07T04:10:33+00:00",
+      "peak_price": 0.35806,
+      "cost_usdt": 547.0386023156972
+    },
+    "XLMUSDT": {
+      "qty": 2588.4126543522066,
+      "entry_price": 0.21113,
+      "entry_time": "2026-06-07T04:10:33+00:00",
+      "peak_price": 0.21113,
+      "cost_usdt": 547.0386023156972
     }
   },
   "trades": [
@@ -181,6 +188,36 @@
       "fee_usdt": 1.1961103496555616,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=62 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-07T04:10:29+00:00",
+      "side": "SELL",
+      "symbol": "ALLOUSDT",
+      "qty": 3058.6280986661527,
+      "price": 0.35806,
+      "fee_usdt": 1.0951723770084028,
+      "pnl_usdt": -102.0331450241672,
+      "reason": "STOP_LOSS -8.35%"
+    },
+    {
+      "time": "2026-06-07T04:10:33+00:00",
+      "side": "BUY",
+      "symbol": "ALLOUSDT",
+      "qty": 1526.2569505484596,
+      "price": 0.35806,
+      "fee_usdt": 0.5470386023156972,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=67 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-07T04:10:33+00:00",
+      "side": "BUY",
+      "symbol": "XLMUSDT",
+      "qty": 2588.4126543522066,
+      "price": 0.21113,
+      "fee_usdt": 0.5470386023156972,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=63 WEAK_BUY"
     }
   ]
 }
