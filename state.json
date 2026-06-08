@@ -11,11 +11,11 @@
       "cost_usdt": 547.0386023156972
     },
     "ALLOUSDT": {
-      "qty": 1515.964657960985,
-      "entry_price": 0.3008,
-      "entry_time": "2026-06-07T13:58:27+00:00",
-      "peak_price": 0.38328,
-      "cost_usdt": 456.4586277424067
+      "qty": 1512.9342446097212,
+      "entry_price": 0.46728,
+      "entry_time": "2026-06-08T12:36:01+00:00",
+      "peak_price": 0.46728,
+      "cost_usdt": 707.6715854066371
     }
   },
   "trades": [
@@ -238,6 +238,26 @@
       "fee_usdt": 0.4564586277424067,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=67 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-08T12:35:56+00:00",
+      "side": "SELL",
+      "symbol": "ALLOUSDT",
+      "qty": 1515.964657960985,
+      "price": 0.46728,
+      "fee_usdt": 0.7083799653720091,
+      "pnl_usdt": 251.21295766423037,
+      "reason": "TAKE_PROFIT 55.35%"
+    },
+    {
+      "time": "2026-06-08T12:36:01+00:00",
+      "side": "BUY",
+      "symbol": "ALLOUSDT",
+      "qty": 1512.9342446097212,
+      "price": 0.46728,
+      "fee_usdt": 0.7076715854066371,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=69 WEAK_BUY"
     }
   ]
 }
