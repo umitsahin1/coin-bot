@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 526.9234516383895,
   "initial_capital": 1000.0,
   "positions": {
-    "WLDUSDT": {
-      "qty": 1127.513686491942,
-      "entry_price": 0.5057,
-      "entry_time": "2026-06-09T21:49:18+00:00",
-      "peak_price": 0.5085,
-      "cost_usdt": 570.7544256846597
-    },
     "ALLOUSDT": {
       "qty": 1360.7552652832205,
       "entry_price": 0.41902,
@@ -318,6 +311,16 @@
       "fee_usdt": 0.5707544256846597,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=63 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-10T18:31:49+00:00",
+      "side": "SELL",
+      "symbol": "WLDUSDT",
+      "qty": 1127.513686491942,
+      "price": 0.4678,
+      "fee_usdt": 0.5274509025409304,
+      "pnl_usdt": -43.830974046270285,
+      "reason": "STOP_LOSS -7.49%"
     }
   ]
 }
