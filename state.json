@@ -7,14 +7,14 @@
       "qty": 523.3856525797909,
       "entry_price": 1.0011,
       "entry_time": "2026-06-10T22:05:03+00:00",
-      "peak_price": 1.0011,
+      "peak_price": 1.0012,
       "cost_usdt": 524.485862660289
     },
     "ALLOUSDT": {
       "qty": 1364.376160189643,
       "entry_price": 0.38403,
       "entry_time": "2026-06-10T22:05:03+00:00",
-      "peak_price": 0.38753,
+      "peak_price": 0.3946,
       "cost_usdt": 524.485862660289
     }
   },
