@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 482.20434839391555,
   "initial_capital": 1000.0,
   "positions": {
-    "ALLOUSDT": {
-      "qty": 1349.1922949165498,
-      "entry_price": 0.39107,
-      "entry_time": "2026-06-13T04:00:15+00:00",
-      "peak_price": 0.39332,
-      "cost_usdt": 528.1567875605756
-    },
     "WLDUSDT": {
       "qty": 1102.2114701755067,
       "entry_price": 0.4787,
@@ -398,6 +391,16 @@
       "fee_usdt": 0.5281567875605756,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=63 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-14T10:49:59+00:00",
+      "side": "SELL",
+      "symbol": "ALLOUSDT",
+      "qty": 1349.1922949165498,
+      "price": 0.35776,
+      "fee_usdt": 0.48268703542934494,
+      "pnl_usdt": -45.95243916666004,
+      "reason": "STOP_LOSS -8.52%"
     }
   ]
 }
