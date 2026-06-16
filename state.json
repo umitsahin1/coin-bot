@@ -1,14 +1,21 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 482.20434839391555,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "WLDUSDT": {
-      "qty": 1102.2114701755067,
-      "entry_price": 0.4787,
-      "entry_time": "2026-06-13T04:00:15+00:00",
-      "peak_price": 0.6198,
-      "cost_usdt": 528.1567875605756
+    "ETHUSDT": {
+      "qty": 0.3339901760690022,
+      "entry_price": 1799.63,
+      "entry_time": "2026-06-16T12:55:54+00:00",
+      "peak_price": 1799.63,
+      "cost_usdt": 601.6604009600185
+    },
+    "XLMUSDT": {
+      "qty": 2702.1162585823527,
+      "entry_price": 0.22244,
+      "entry_time": "2026-06-16T12:55:54+00:00",
+      "peak_price": 0.22244,
+      "cost_usdt": 601.6604009600185
     }
   },
   "trades": [
@@ -401,6 +408,36 @@
       "fee_usdt": 0.48268703542934494,
       "pnl_usdt": -45.95243916666004,
       "reason": "STOP_LOSS -8.52%"
+    },
+    {
+      "time": "2026-06-16T12:55:50+00:00",
+      "side": "SELL",
+      "symbol": "WLDUSDT",
+      "qty": 1102.2114701755067,
+      "price": 0.6549,
+      "fee_usdt": 0.7218382918179395,
+      "pnl_usdt": 192.95966596554592,
+      "reason": "TAKE_PROFIT 36.81%"
+    },
+    {
+      "time": "2026-06-16T12:55:54+00:00",
+      "side": "BUY",
+      "symbol": "ETHUSDT",
+      "qty": 0.3339901760690022,
+      "price": 1799.63,
+      "fee_usdt": 0.6016604009600185,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=73 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-16T12:55:54+00:00",
+      "side": "BUY",
+      "symbol": "XLMUSDT",
+      "qty": 2702.1162585823527,
+      "price": 0.22244,
+      "fee_usdt": 0.6016604009600185,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=70 WEAK_BUY"
     }
   ]
 }
