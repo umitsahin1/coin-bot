@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 561.3231477751173,
   "initial_capital": 1000.0,
   "positions": {
-    "ETHUSDT": {
-      "qty": 0.3339901760690022,
-      "entry_price": 1799.63,
-      "entry_time": "2026-06-16T12:55:54+00:00",
-      "peak_price": 1799.63,
-      "cost_usdt": 601.6604009600185
-    },
     "XLMUSDT": {
       "qty": 2702.1162585823527,
       "entry_price": 0.22244,
@@ -438,6 +431,16 @@
       "fee_usdt": 0.6016604009600185,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=70 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-18T18:26:55+00:00",
+      "side": "SELL",
+      "symbol": "ETHUSDT",
+      "qty": 0.3339901760690022,
+      "price": 1682.34,
+      "fee_usdt": 0.5618850328079252,
+      "pnl_usdt": -40.337253184901215,
+      "reason": "signal=WEAK_SELL score=38"
     }
   ]
 }
