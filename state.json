@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 585.4979263645931,
   "initial_capital": 1000.0,
   "positions": {
-    "BASEDUSDT": {
-      "qty": 6403.190324210293,
-      "entry_price": 0.08939,
-      "entry_time": "2026-06-19T12:08:19+00:00",
-      "peak_price": 0.10208,
-      "cost_usdt": 572.9541372183764
-    },
     "XLMUSDT": {
       "qty": 2643.060505546537,
       "entry_price": 0.21656,
@@ -478,6 +471,16 @@
       "fee_usdt": 0.5729541372183764,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=63 WEAK_BUY"
+    },
+    {
+      "time": "2026-06-20T10:34:12+00:00",
+      "side": "SELL",
+      "symbol": "BASEDUSDT",
+      "qty": 6403.190324210293,
+      "price": 0.09153,
+      "fee_usdt": 0.5860840103749682,
+      "pnl_usdt": 12.543789146216682,
+      "reason": "TRAILING_STOP from peak 0.10208"
     }
   ]
 }
