@@ -1,6 +1,6 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 534.604883202997,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
     "OKBUSDT": {
@@ -9,6 +9,13 @@
       "entry_time": "2026-06-20T17:27:41+00:00",
       "peak_price": 80.84,
       "cost_usdt": 577.5443888044178
+    },
+    "USDGUSDT": {
+      "qty": 533.4301621252437,
+      "entry_price": 1.0012,
+      "entry_time": "2026-06-24T17:56:18+00:00",
+      "peak_price": 1.0012,
+      "cost_usdt": 534.604883202997
     }
   },
   "trades": [
@@ -521,6 +528,16 @@
       "fee_usdt": 0.5351400232262232,
       "pnl_usdt": -42.93950560142082,
       "reason": "STOP_LOSS -7.25%"
+    },
+    {
+      "time": "2026-06-24T17:56:18+00:00",
+      "side": "BUY",
+      "symbol": "USDGUSDT",
+      "qty": 533.4301621252437,
+      "price": 1.0012,
+      "fee_usdt": 0.534604883202997,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=70 WEAK_BUY"
     }
   ]
 }
