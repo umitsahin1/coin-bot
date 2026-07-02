@@ -1,6 +1,6 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 566.6115642878357,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
     "USDGUSDT": {
@@ -9,6 +9,13 @@
       "entry_time": "2026-06-24T17:56:18+00:00",
       "peak_price": 1.0015,
       "cost_usdt": 534.604883202997
+    },
+    "SOLUSDT": {
+      "qty": 7.308521016443483,
+      "entry_price": 77.45,
+      "entry_time": "2026-07-02T03:47:51+00:00",
+      "peak_price": 77.45,
+      "cost_usdt": 566.6115642878357
     }
   },
   "trades": [
@@ -541,6 +548,16 @@
       "fee_usdt": 0.5671787430308666,
       "pnl_usdt": -10.932824516582173,
       "reason": "signal=WEAK_SELL score=39"
+    },
+    {
+      "time": "2026-07-02T03:47:51+00:00",
+      "side": "BUY",
+      "symbol": "SOLUSDT",
+      "qty": 7.308521016443483,
+      "price": 77.45,
+      "fee_usdt": 0.5666115642878357,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=75 BUY"
     }
   ]
 }
