@@ -1,14 +1,21 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 533.4296286950815,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "SOLUSDT": {
-      "qty": 7.308521016443483,
-      "entry_price": 77.45,
-      "entry_time": "2026-07-02T03:47:51+00:00",
-      "peak_price": 82.72,
-      "cost_usdt": 566.6115642878357
+    "NESUSDT": {
+      "qty": 1849.0627479699758,
+      "entry_price": 0.2994,
+      "entry_time": "2026-07-08T06:29:35+00:00",
+      "peak_price": 0.2994,
+      "cost_usdt": 554.1635502925033
+    },
+    "ZECUSDT": {
+      "qty": 1.1536893817826257,
+      "entry_price": 479.86,
+      "entry_time": "2026-07-08T06:29:35+00:00",
+      "peak_price": 479.86,
+      "cost_usdt": 554.1635502925033
     }
   },
   "trades": [
@@ -561,6 +568,36 @@
       "fee_usdt": 0.5339635922873689,
       "pnl_usdt": -1.175254507915497,
       "reason": "signal=WEAK_SELL score=26"
+    },
+    {
+      "time": "2026-07-08T06:29:32+00:00",
+      "side": "SELL",
+      "symbol": "SOLUSDT",
+      "qty": 7.308521016443483,
+      "price": 78.74,
+      "fee_usdt": 0.5754729448347599,
+      "pnl_usdt": 8.28590760208931,
+      "reason": "signal=WEAK_SELL score=36"
+    },
+    {
+      "time": "2026-07-08T06:29:35+00:00",
+      "side": "BUY",
+      "symbol": "NESUSDT",
+      "qty": 1849.0627479699758,
+      "price": 0.2994,
+      "fee_usdt": 0.5541635502925033,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=77 BUY"
+    },
+    {
+      "time": "2026-07-08T06:29:35+00:00",
+      "side": "BUY",
+      "symbol": "ZECUSDT",
+      "qty": 1.1536893817826257,
+      "price": 479.86,
+      "fee_usdt": 0.5541635502925033,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=68 WEAK_BUY"
     }
   ]
 }
