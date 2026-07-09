@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 503.3657292229966,
   "initial_capital": 1000.0,
   "positions": {
-    "NESUSDT": {
-      "qty": 1849.0627479699758,
-      "entry_price": 0.2994,
-      "entry_time": "2026-07-08T06:29:35+00:00",
-      "peak_price": 0.3096,
-      "cost_usdt": 554.1635502925033
-    },
     "ZECUSDT": {
       "qty": 1.1536893817826257,
       "entry_price": 479.86,
@@ -598,6 +591,16 @@
       "fee_usdt": 0.5541635502925033,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=68 WEAK_BUY"
+    },
+    {
+      "time": "2026-07-09T10:56:16+00:00",
+      "side": "SELL",
+      "symbol": "NESUSDT",
+      "qty": 1849.0627479699758,
+      "price": 0.2725,
+      "fee_usdt": 0.5038695988218185,
+      "pnl_usdt": -50.797821069506654,
+      "reason": "STOP_LOSS -8.98%"
     }
   ]
 }
