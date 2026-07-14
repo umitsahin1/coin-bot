@@ -1,14 +1,14 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 503.3657292229966,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
     "ZECUSDT": {
-      "qty": 1.1536893817826257,
-      "entry_price": 479.86,
-      "entry_time": "2026-07-08T06:29:35+00:00",
-      "peak_price": 538.91,
-      "cost_usdt": 554.1635502925033
+      "qty": 2.1659754200778383,
+      "entry_price": 495.63,
+      "entry_time": "2026-07-14T02:39:23+00:00",
+      "peak_price": 495.63,
+      "cost_usdt": 1074.5969944476265
     }
   },
   "trades": [
@@ -601,6 +601,26 @@
       "fee_usdt": 0.5038695988218185,
       "pnl_usdt": -50.797821069506654,
       "reason": "STOP_LOSS -8.98%"
+    },
+    {
+      "time": "2026-07-14T02:39:21+00:00",
+      "side": "SELL",
+      "symbol": "ZECUSDT",
+      "qty": 1.1536893817826257,
+      "price": 495.63,
+      "fee_usdt": 0.5718030682929227,
+      "pnl_usdt": 17.067714932126478,
+      "reason": "TRAILING_STOP from peak 538.91"
+    },
+    {
+      "time": "2026-07-14T02:39:23+00:00",
+      "side": "BUY",
+      "symbol": "ZECUSDT",
+      "qty": 2.1659754200778383,
+      "price": 495.63,
+      "fee_usdt": 1.0745969944476266,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=66 WEAK_BUY"
     }
   ]
 }
