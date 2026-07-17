@@ -3,12 +3,19 @@
   "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "ZECUSDT": {
-      "qty": 2.1659754200778383,
-      "entry_price": 495.63,
-      "entry_time": "2026-07-14T02:39:23+00:00",
-      "peak_price": 575.81,
-      "cost_usdt": 1074.5969944476265
+    "ONDOUSDT": {
+      "qty": 1555.2086940234744,
+      "entry_price": 0.3639,
+      "entry_time": "2026-07-17T02:47:42+00:00",
+      "peak_price": 0.3639,
+      "cost_usdt": 566.5069507058482
+    },
+    "ETHUSDT": {
+      "qty": 0.3035265580194376,
+      "entry_price": 1864.55,
+      "entry_time": "2026-07-17T02:47:42+00:00",
+      "peak_price": 1864.55,
+      "cost_usdt": 566.5069507058482
     }
   },
   "trades": [
@@ -621,6 +628,36 @@
       "fee_usdt": 1.0745969944476266,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=66 WEAK_BUY"
+    },
+    {
+      "time": "2026-07-17T02:47:39+00:00",
+      "side": "SELL",
+      "symbol": "ZECUSDT",
+      "qty": 2.1659754200778383,
+      "price": 523.62,
+      "fee_usdt": 1.1341480494611575,
+      "pnl_usdt": 58.416906964069995,
+      "reason": "TRAILING_STOP from peak 575.81"
+    },
+    {
+      "time": "2026-07-17T02:47:42+00:00",
+      "side": "BUY",
+      "symbol": "ONDOUSDT",
+      "qty": 1555.2086940234744,
+      "price": 0.3639,
+      "fee_usdt": 0.5665069507058482,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=67 WEAK_BUY"
+    },
+    {
+      "time": "2026-07-17T02:47:42+00:00",
+      "side": "BUY",
+      "symbol": "ETHUSDT",
+      "qty": 0.3035265580194376,
+      "price": 1864.55,
+      "fee_usdt": 0.5665069507058482,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=63 WEAK_BUY"
     }
   ]
 }
