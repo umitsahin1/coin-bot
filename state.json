@@ -7,14 +7,14 @@
       "qty": 1555.2086940234744,
       "entry_price": 0.3639,
       "entry_time": "2026-07-17T02:47:42+00:00",
-      "peak_price": 0.3805,
+      "peak_price": 0.3906,
       "cost_usdt": 566.5069507058482
     },
     "ETHUSDT": {
       "qty": 0.3035265580194376,
       "entry_price": 1864.55,
       "entry_time": "2026-07-17T02:47:42+00:00",
-      "peak_price": 1926.72,
+      "peak_price": 1933.9,
       "cost_usdt": 566.5069507058482
     }
   },
