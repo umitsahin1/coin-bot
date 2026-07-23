@@ -1,6 +1,6 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 574.7228693713428,
   "initial_capital": 1000.0,
   "positions": {
     "ONDOUSDT": {
@@ -8,13 +8,6 @@
       "entry_price": 0.3639,
       "entry_time": "2026-07-17T02:47:42+00:00",
       "peak_price": 0.4139,
-      "cost_usdt": 566.5069507058482
-    },
-    "ETHUSDT": {
-      "qty": 0.3035265580194376,
-      "entry_price": 1864.55,
-      "entry_time": "2026-07-17T02:47:42+00:00",
-      "peak_price": 1942.69,
       "cost_usdt": 566.5069507058482
     }
   },
@@ -658,6 +651,16 @@
       "fee_usdt": 0.5665069507058482,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=63 WEAK_BUY"
+    },
+    {
+      "time": "2026-07-23T17:24:16+00:00",
+      "side": "SELL",
+      "symbol": "ETHUSDT",
+      "qty": 0.3035265580194376,
+      "price": 1895.38,
+      "fee_usdt": 0.5752981675388816,
+      "pnl_usdt": 8.215918665494542,
+      "reason": "signal=WEAK_SELL score=40"
     }
   ]
 }
