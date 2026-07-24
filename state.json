@@ -1,14 +1,14 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 574.7228693713428,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "ONDOUSDT": {
-      "qty": 1555.2086940234744,
-      "entry_price": 0.3639,
-      "entry_time": "2026-07-17T02:47:42+00:00",
-      "peak_price": 0.4139,
-      "cost_usdt": 566.5069507058482
+    "REUSDT": {
+      "qty": 1899.7705456248925,
+      "entry_price": 0.62387,
+      "entry_time": "2026-07-24T13:48:49+00:00",
+      "peak_price": 0.62387,
+      "cost_usdt": 1186.3962465455475
     }
   },
   "trades": [
@@ -661,6 +661,26 @@
       "fee_usdt": 0.5752981675388816,
       "pnl_usdt": 8.215918665494542,
       "reason": "signal=WEAK_SELL score=40"
+    },
+    {
+      "time": "2026-07-24T13:48:46+00:00",
+      "side": "SELL",
+      "symbol": "ONDOUSDT",
+      "qty": 1555.2086940234744,
+      "price": 0.3937,
+      "fee_usdt": 0.6122856628370419,
+      "pnl_usdt": 45.166426468356576,
+      "reason": "signal=WEAK_SELL score=40"
+    },
+    {
+      "time": "2026-07-24T13:48:49+00:00",
+      "side": "BUY",
+      "symbol": "REUSDT",
+      "qty": 1899.7705456248925,
+      "price": 0.62387,
+      "fee_usdt": 1.1863962465455475,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=64 WEAK_BUY"
     }
   ]
 }
