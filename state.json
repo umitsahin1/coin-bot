@@ -1,16 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 1052.5021957357094,
   "initial_capital": 1000.0,
-  "positions": {
-    "REUSDT": {
-      "qty": 1899.7705456248925,
-      "entry_price": 0.62387,
-      "entry_time": "2026-07-24T13:48:49+00:00",
-      "peak_price": 0.62387,
-      "cost_usdt": 1186.3962465455475
-    }
-  },
+  "positions": {},
   "trades": [
     {
       "time": "2026-05-16T13:27:23+00:00",
@@ -681,6 +673,16 @@
       "fee_usdt": 1.1863962465455475,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=64 WEAK_BUY"
+    },
+    {
+      "time": "2026-07-25T06:19:30+00:00",
+      "side": "SELL",
+      "symbol": "REUSDT",
+      "qty": 1899.7705456248925,
+      "price": 0.55457,
+      "fee_usdt": 1.0535557514871967,
+      "pnl_usdt": -133.89405080983806,
+      "reason": "STOP_LOSS -11.11%"
     }
   ]
 }
