@@ -7,14 +7,14 @@
       "qty": 7330.240473647334,
       "entry_price": 0.07172,
       "entry_time": "2026-07-26T02:56:57+00:00",
-      "peak_price": 0.07172,
+      "peak_price": 0.07273,
       "cost_usdt": 526.2510978678547
     },
     "SHIBUSDT": {
       "qty": 107334595.09391318,
       "entry_price": 4.898e-06,
       "entry_time": "2026-07-26T02:56:57+00:00",
-      "peak_price": 4.898e-06,
+      "peak_price": 5.416e-06,
       "cost_usdt": 526.2510978678547
     }
   },
