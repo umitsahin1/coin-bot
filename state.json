@@ -3,12 +3,12 @@
   "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "USDGUSDT": {
-      "qty": 1028.7909168021758,
-      "entry_price": 1.001,
-      "entry_time": "2026-07-29T10:40:47+00:00",
-      "peak_price": 1.0014,
-      "cost_usdt": 1030.8505582772552
+    "ADAUSDT": {
+      "qty": 5287.365080039217,
+      "entry_price": 0.1944,
+      "entry_time": "2026-08-04T14:19:33+00:00",
+      "peak_price": 0.1944,
+      "cost_usdt": 1028.8926642238475
     }
   },
   "trades": [
@@ -761,6 +761,26 @@
       "fee_usdt": 1.0308505582772554,
       "pnl_usdt": 0.0,
       "reason": "score=68 WEAK_BUY"
+    },
+    {
+      "time": "2026-08-04T14:19:32+00:00",
+      "side": "SELL",
+      "symbol": "USDGUSDT",
+      "qty": 1028.7909168021758,
+      "price": 1.0011,
+      "fee_usdt": 1.0299225868106583,
+      "pnl_usdt": -1.9578940534076992,
+      "reason": "signal=WEAK_SELL score=35"
+    },
+    {
+      "time": "2026-08-04T14:19:33+00:00",
+      "side": "BUY",
+      "symbol": "ADAUSDT",
+      "qty": 5287.365080039217,
+      "price": 0.1944,
+      "fee_usdt": 1.0288926642238476,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=68 WEAK_BUY"
     }
   ]
 }
