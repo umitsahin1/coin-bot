@@ -1,20 +1,13 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 408.64433641251793,
   "initial_capital": 1000.0,
   "positions": {
-    "BICOUSDT": {
-      "qty": 10580.791252000006,
-      "entry_price": 0.0485,
-      "entry_time": "2026-08-10T01:56:24+00:00",
-      "peak_price": 0.0485,
-      "cost_usdt": 513.68205777978
-    },
     "GRVTUSDT": {
       "qty": 1651.97133570049,
       "entry_price": 0.31064,
       "entry_time": "2026-08-10T01:56:24+00:00",
-      "peak_price": 0.31064,
+      "peak_price": 0.33309,
       "cost_usdt": 513.68205777978
     }
   },
@@ -818,6 +811,16 @@
       "fee_usdt": 0.51368205777978,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=70 WEAK_BUY"
+    },
+    {
+      "time": "2026-08-10T05:27:42+00:00",
+      "side": "SELL",
+      "symbol": "BICOUSDT",
+      "qty": 10580.791252000006,
+      "price": 0.03866,
+      "fee_usdt": 0.40905338980232026,
+      "pnl_usdt": -105.03772136726212,
+      "reason": "STOP_LOSS -20.29%"
     }
   ]
 }
