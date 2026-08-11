@@ -1,14 +1,21 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 408.64433641251793,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "GRVTUSDT": {
-      "qty": 1651.97133570049,
-      "entry_price": 0.31064,
-      "entry_time": "2026-08-10T01:56:24+00:00",
-      "peak_price": 0.36615,
-      "cost_usdt": 513.68205777978
+    "WLDUSDT": {
+      "qty": 1392.6253899825335,
+      "entry_price": 0.3408,
+      "entry_time": "2026-08-11T01:52:08+00:00",
+      "peak_price": 0.3408,
+      "cost_usdt": 475.0818147207682
+    },
+    "BICOUSDT": {
+      "qty": 11270.641959298204,
+      "entry_price": 0.04211,
+      "entry_time": "2026-08-11T01:52:08+00:00",
+      "peak_price": 0.04211,
+      "cost_usdt": 475.0818147207682
     }
   },
   "trades": [
@@ -821,6 +828,36 @@
       "fee_usdt": 0.40905338980232026,
       "pnl_usdt": -105.03772136726212,
       "reason": "STOP_LOSS -20.29%"
+    },
+    {
+      "time": "2026-08-11T01:52:05+00:00",
+      "side": "SELL",
+      "symbol": "GRVTUSDT",
+      "qty": 1651.97133570049,
+      "price": 0.32813,
+      "fee_usdt": 0.5420613543834018,
+      "pnl_usdt": 27.837235249238347,
+      "reason": "TRAILING_STOP from peak 0.36615"
+    },
+    {
+      "time": "2026-08-11T01:52:08+00:00",
+      "side": "BUY",
+      "symbol": "WLDUSDT",
+      "qty": 1392.6253899825335,
+      "price": 0.3408,
+      "fee_usdt": 0.4750818147207682,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=67 WEAK_BUY"
+    },
+    {
+      "time": "2026-08-11T01:52:08+00:00",
+      "side": "BUY",
+      "symbol": "BICOUSDT",
+      "qty": 11270.641959298204,
+      "price": 0.04211,
+      "fee_usdt": 0.4750818147207682,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=65 WEAK_BUY"
     }
   ]
 }
