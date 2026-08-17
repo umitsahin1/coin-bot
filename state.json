@@ -1,6 +1,6 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 413.8783355077501,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
     "WLDUSDT": {
@@ -9,6 +9,13 @@
       "entry_time": "2026-08-11T01:52:08+00:00",
       "peak_price": 0.3661,
       "cost_usdt": 475.0818147207682
+    },
+    "RLUSDUSDT": {
+      "qty": 412.8864161895769,
+      "entry_price": 1.0014,
+      "entry_time": "2026-08-17T20:28:27+00:00",
+      "peak_price": 1.0014,
+      "cost_usdt": 413.8783355077501
     }
   },
   "trades": [
@@ -881,6 +888,16 @@
       "fee_usdt": 0.414292628135886,
       "pnl_usdt": -31.204612666656885,
       "reason": "TRAILING_STOP from peak 0.35552"
+    },
+    {
+      "time": "2026-08-17T20:28:27+00:00",
+      "side": "BUY",
+      "symbol": "RLUSDUSDT",
+      "qty": 412.8864161895769,
+      "price": 1.0014,
+      "fee_usdt": 0.4138783355077501,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=73 WEAK_BUY"
     }
   ]
 }
