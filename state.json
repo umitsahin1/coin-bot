@@ -3,19 +3,19 @@
   "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "WLDUSDT": {
-      "qty": 1392.6253899825335,
-      "entry_price": 0.3408,
-      "entry_time": "2026-08-11T01:52:08+00:00",
-      "peak_price": 0.3661,
-      "cost_usdt": 475.0818147207682
+    "HYPEUSDT": {
+      "qty": 7.308633400234051,
+      "entry_price": 59.427,
+      "entry_time": "2026-08-18T04:36:46+00:00",
+      "peak_price": 59.427,
+      "cost_usdt": 434.76492199770667
     },
-    "RLUSDUSDT": {
-      "qty": 412.8864161895769,
-      "entry_price": 1.0014,
-      "entry_time": "2026-08-17T20:28:27+00:00",
-      "peak_price": 1.0014,
-      "cost_usdt": 413.8783355077501
+    "XAUTUSDT": {
+      "qty": 0.09923917129180389,
+      "entry_price": 4376.6,
+      "entry_time": "2026-08-18T04:36:46+00:00",
+      "peak_price": 4376.6,
+      "cost_usdt": 434.76492199770667
     }
   },
   "trades": [
@@ -898,6 +898,46 @@
       "fee_usdt": 0.4138783355077501,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=73 WEAK_BUY"
+    },
+    {
+      "time": "2026-08-18T04:36:44+00:00",
+      "side": "SELL",
+      "symbol": "WLDUSDT",
+      "qty": 1392.6253899825335,
+      "price": 0.3282,
+      "fee_usdt": 0.45705965299226753,
+      "pnl_usdt": -18.47922138149295,
+      "reason": "TRAILING_STOP from peak 0.3661"
+    },
+    {
+      "time": "2026-08-18T04:36:44+00:00",
+      "side": "SELL",
+      "symbol": "RLUSDUSDT",
+      "qty": 412.8864161895769,
+      "price": 1.0011,
+      "fee_usdt": 0.4133405912473855,
+      "pnl_usdt": -0.951084851611995,
+      "reason": "signal=WEAK_SELL score=39"
+    },
+    {
+      "time": "2026-08-18T04:36:46+00:00",
+      "side": "BUY",
+      "symbol": "HYPEUSDT",
+      "qty": 7.308633400234051,
+      "price": 59.427,
+      "fee_usdt": 0.43476492199770667,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=69 WEAK_BUY"
+    },
+    {
+      "time": "2026-08-18T04:36:46+00:00",
+      "side": "BUY",
+      "symbol": "XAUTUSDT",
+      "qty": 0.09923917129180389,
+      "price": 4376.6,
+      "fee_usdt": 0.43476492199770667,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=61 WEAK_BUY"
     }
   ]
 }
