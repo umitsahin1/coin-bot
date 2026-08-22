@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 599.7235150229628,
   "initial_capital": 1000.0,
   "positions": {
-    "HYPEUSDT": {
-      "qty": 7.308633400234051,
-      "entry_price": 59.427,
-      "entry_time": "2026-08-18T04:36:46+00:00",
-      "peak_price": 76.619,
-      "cost_usdt": 434.76492199770667
-    },
     "XAUTUSDT": {
       "qty": 0.09566634880075639,
       "entry_price": 4508.2,
@@ -958,6 +951,16 @@
       "fee_usdt": 0.43171474841198193,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=77 BUY"
+    },
+    {
+      "time": "2026-08-22T04:34:00+00:00",
+      "side": "SELL",
+      "symbol": "HYPEUSDT",
+      "qty": 7.308633400234051,
+      "price": 82.139,
+      "fee_usdt": 0.6003238388618247,
+      "pnl_usdt": 164.95859302525616,
+      "reason": "TAKE_PROFIT 38.22%"
     }
   ]
 }
