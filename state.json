@@ -1,6 +1,6 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 599.7235150229628,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
     "XAUTUSDT": {
@@ -9,6 +9,13 @@
       "entry_time": "2026-08-20T20:29:46+00:00",
       "peak_price": 4640.7,
       "cost_usdt": 431.71474841198193
+    },
+    "OKBUSDT": {
+      "qty": 5.219757723540162,
+      "entry_price": 114.78,
+      "entry_time": "2026-08-24T16:39:47+00:00",
+      "peak_price": 114.78,
+      "cost_usdt": 599.7235150229628
     }
   },
   "trades": [
@@ -961,6 +968,16 @@
       "fee_usdt": 0.6003238388618247,
       "pnl_usdt": 164.95859302525616,
       "reason": "TAKE_PROFIT 38.22%"
+    },
+    {
+      "time": "2026-08-24T16:39:47+00:00",
+      "side": "BUY",
+      "symbol": "OKBUSDT",
+      "qty": 5.219757723540162,
+      "price": 114.78,
+      "fee_usdt": 0.5997235150229628,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=72 WEAK_BUY"
     }
   ]
 }
