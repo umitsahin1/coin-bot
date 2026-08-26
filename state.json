@@ -1,14 +1,21 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 441.04914244753,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "OKBUSDT": {
-      "qty": 5.219757723540162,
-      "entry_price": 114.78,
-      "entry_time": "2026-08-24T16:39:47+00:00",
-      "peak_price": 117.42,
-      "cost_usdt": 599.7235150229628
+    "BTCUSDT": {
+      "qty": 0.006527703053098064,
+      "entry_price": 78012.0,
+      "entry_time": "2026-08-26T16:48:43+00:00",
+      "peak_price": 78012.0,
+      "cost_usdt": 509.74891949778396
+    },
+    "HYPEUSDT": {
+      "qty": 6.326031013780124,
+      "entry_price": 80.499,
+      "entry_time": "2026-08-26T16:48:43+00:00",
+      "peak_price": 80.499,
+      "cost_usdt": 509.74891949778396
     }
   },
   "trades": [
@@ -981,6 +988,36 @@
       "fee_usdt": 0.44149063308061065,
       "pnl_usdt": 9.334394035548087,
       "reason": "signal=NEUTRAL score=42"
+    },
+    {
+      "time": "2026-08-26T16:48:40+00:00",
+      "side": "SELL",
+      "symbol": "OKBUSDT",
+      "qty": 5.219757723540162,
+      "price": 110.93,
+      "fee_usdt": 0.5790277242723103,
+      "pnl_usdt": -21.274818474924928,
+      "reason": "signal=WEAK_SELL score=39"
+    },
+    {
+      "time": "2026-08-26T16:48:43+00:00",
+      "side": "BUY",
+      "symbol": "BTCUSDT",
+      "qty": 0.006527703053098064,
+      "price": 78012.0,
+      "fee_usdt": 0.509748919497784,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=64 WEAK_BUY"
+    },
+    {
+      "time": "2026-08-26T16:48:43+00:00",
+      "side": "BUY",
+      "symbol": "HYPEUSDT",
+      "qty": 6.326031013780124,
+      "price": 80.499,
+      "fee_usdt": 0.509748919497784,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=64 WEAK_BUY"
     }
   ]
 }
