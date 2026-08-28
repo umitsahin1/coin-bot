@@ -10,12 +10,12 @@
       "peak_price": 79904.7,
       "cost_usdt": 509.74891949778396
     },
-    "HYPEUSDT": {
-      "qty": 6.326031013780124,
-      "entry_price": 80.499,
-      "entry_time": "2026-08-26T16:48:43+00:00",
-      "peak_price": 84.913,
-      "cost_usdt": 509.74891949778396
+    "TRUMPUSDT": {
+      "qty": 193.23130683662689,
+      "entry_price": 2.603,
+      "entry_time": "2026-08-28T21:49:03+00:00",
+      "peak_price": 2.603,
+      "cost_usdt": 503.48457627201185
     }
   },
   "trades": [
@@ -1018,6 +1018,26 @@
       "fee_usdt": 0.509748919497784,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=64 WEAK_BUY"
+    },
+    {
+      "time": "2026-08-28T21:49:01+00:00",
+      "side": "SELL",
+      "symbol": "HYPEUSDT",
+      "qty": 6.326031013780124,
+      "price": 79.669,
+      "fee_usdt": 0.5039885648368487,
+      "pnl_usdt": -6.264343225772109,
+      "reason": "signal=WEAK_SELL score=40"
+    },
+    {
+      "time": "2026-08-28T21:49:03+00:00",
+      "side": "BUY",
+      "symbol": "TRUMPUSDT",
+      "qty": 193.23130683662689,
+      "price": 2.603,
+      "fee_usdt": 0.5034845762720118,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=68 WEAK_BUY"
     }
   ]
 }
