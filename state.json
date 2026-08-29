@@ -1,20 +1,13 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 505.48303820092053,
   "initial_capital": 1000.0,
   "positions": {
-    "BTCUSDT": {
-      "qty": 0.006527703053098064,
-      "entry_price": 78012.0,
-      "entry_time": "2026-08-26T16:48:43+00:00",
-      "peak_price": 79904.7,
-      "cost_usdt": 509.74891949778396
-    },
     "TRUMPUSDT": {
       "qty": 193.23130683662689,
       "entry_price": 2.603,
       "entry_time": "2026-08-28T21:49:03+00:00",
-      "peak_price": 2.603,
+      "peak_price": 2.84,
       "cost_usdt": 503.48457627201185
     }
   },
@@ -1038,6 +1031,16 @@
       "fee_usdt": 0.5034845762720118,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=68 WEAK_BUY"
+    },
+    {
+      "time": "2026-08-29T06:09:00+00:00",
+      "side": "SELL",
+      "symbol": "BTCUSDT",
+      "qty": 0.006527703053098064,
+      "price": 77514.1,
+      "fee_usdt": 0.5059890272281488,
+      "pnl_usdt": -4.2658812968634265,
+      "reason": "signal=WEAK_SELL score=38"
     }
   ]
 }
