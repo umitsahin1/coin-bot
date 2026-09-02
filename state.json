@@ -1,6 +1,6 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 597.4933028389069,
   "initial_capital": 1000.0,
   "positions": {
     "ZECUSDT": {
@@ -8,13 +8,6 @@
       "entry_price": 831.07,
       "entry_time": "2026-08-30T04:16:37+00:00",
       "peak_price": 866.75,
-      "cost_usdt": 502.62930787377377
-    },
-    "UNIUSDT": {
-      "qty": 102.30779921880603,
-      "entry_price": 4.908,
-      "entry_time": "2026-08-30T04:16:37+00:00",
-      "peak_price": 6.297,
       "cost_usdt": 502.62930787377377
     }
   },
@@ -1078,6 +1071,16 @@
       "fee_usdt": 0.5026293078737738,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=68 WEAK_BUY"
+    },
+    {
+      "time": "2026-09-02T22:25:51+00:00",
+      "side": "SELL",
+      "symbol": "UNIUSDT",
+      "qty": 102.30779921880603,
+      "price": 5.846,
+      "fee_usdt": 0.5980913942331401,
+      "pnl_usdt": 94.86399496513309,
+      "reason": "TRAILING_STOP from peak 6.297"
     }
   ]
 }
