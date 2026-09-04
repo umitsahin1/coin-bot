@@ -66,14 +66,24 @@ jobs:
         run: python3 test_backtest.py
 
       - name: Run backtest
+        env:
+          CMD:      ${{ inputs.command }}
+          DAYS:     ${{ inputs.days }}
+          SYMBOLS:  ${{ inputs.symbols }}
+          INTRABAR: ${{ inputs.intrabar }}
+          PARAM:    ${{ inputs.param }}
+          VALUES:   ${{ inputs.values }}
         run: |
           set -o pipefail
-          ARGS="${{ inputs.command }} --days ${{ inputs.days }} --symbols ${{ inputs.symbols }}"
-          if [ "${{ inputs.intrabar }}" = "true" ]; then ARGS="$ARGS --intrabar"; fi
-          if [ -n "${{ inputs.param }}" ];  then ARGS="$ARGS --param ${{ inputs.param }}"; fi
-          if [ -n "${{ inputs.values }}" ]; then ARGS="$ARGS --values ${{ inputs.values }}"; fi
-          echo "python3 backtest.py $ARGS"
-          python3 backtest.py $ARGS 2>&1 | tee backtest-sonuc.txt
+          # An array, not a string: sweep values are things like
+          # "-0.05,-0.07", and argparse rejects a value starting with "-"
+          # unless it arrives as --values=... in a single argument.
+          ARGS=("$CMD" --days "$DAYS" --symbols "$SYMBOLS")
+          [ "$INTRABAR" = "true" ] && ARGS+=(--intrabar)
+          [ -n "$PARAM" ]  && ARGS+=("--param=$PARAM")
+          [ -n "$VALUES" ] && ARGS+=("--values=$VALUES")
+          echo "python3 backtest.py ${ARGS[*]}"
+          python3 backtest.py "${ARGS[@]}" 2>&1 | tee backtest-sonuc.txt
 
       - name: Save candle cache
         if: always()
