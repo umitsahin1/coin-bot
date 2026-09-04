@@ -89,6 +89,23 @@ def telegram(text: str) -> bool:
 
 
 # --------------------------------------------------------------------------
+def exit_level(pos: dict) -> tuple[float, str]:
+    """Nearest downside exit for an open position.
+
+    Two levels can close a position on the way down: the hard stop measured
+    from entry, and -- once the peak gain has cleared TRAIL_ACTIVATE_PCT --
+    the trailing level measured from the peak. The higher of the two is the
+    one price reaches first, so that is the one worth warning about.
+    """
+    stop = pos["entry_price"] * (1 + config.STOP_LOSS_PCT)
+    peak_gain = (pos["peak_price"] - pos["entry_price"]) / pos["entry_price"]
+    if peak_gain >= config.TRAIL_ACTIVATE_PCT:
+        trail = pos["peak_price"] * (1 - config.TRAILING_STOP_PCT)
+        if trail > stop:
+            return trail, "trailing"
+    return stop, "stop"
+
+
 def _tr_reason(reason: str) -> str:
     if reason.startswith("STOP_LOSS"):
         return reason.replace("STOP_LOSS", "ZARAR KES")
@@ -109,6 +126,7 @@ def main() -> int:
           f"{list(state['positions'])}")
 
     sold: list[dict] = []
+    warned: list[dict] = []
     changed = False
 
     for sym in list(state["positions"].keys()):
@@ -141,8 +159,27 @@ def main() -> int:
             print(f"  SELL {sym} @ {price:.6g}  {reason}  "
                   f"pnl=${t['pnl_usdt']:+.2f}")
         else:
+            level, kind = exit_level(pos)
+            distance = (price - level) / price * 100 if price else 0.0
             print(f"  hold {sym} @ {price:.6g}  pnl={pnl_pct*100:+.2f}%  "
-                  f"peak={pos['peak_price']:.6g}")
+                  f"peak={pos['peak_price']:.6g}  "
+                  f"{kind}={level:.6g} ({distance:+.2f}% away)")
+
+            already = pos.get("warned_level")
+            if 0 < distance <= config.WARN_PROXIMITY_PCT:
+                # Warn once per level. If the trailing level has climbed with
+                # the peak, that is a new situation and earns a fresh warning.
+                if already is None or level > already * 1.005:
+                    pos["warned_level"] = level
+                    changed = True
+                    warned.append({"symbol": sym, "price": price, "level": level,
+                                   "kind": kind, "distance": distance,
+                                   "pnl_pct": pnl_pct * 100,
+                                   "peak": pos["peak_price"]})
+            elif already is not None and distance > 2 * config.WARN_PROXIMITY_PCT:
+                # Price pulled clear -- re-arm so a second approach warns again.
+                del pos["warned_level"]
+                changed = True
 
     if changed:
         portfolio.prune_cooldowns(state)
@@ -161,6 +198,19 @@ def main() -> int:
         lines.append(f"💰 nakit=${state['cash']:.2f}  "
                      f"açık pozisyon={len(state['positions'])}")
         telegram("\n".join(lines))
+    elif warned:
+        lines = ["<b>⚠️ Coin Bot — Yaklaşma Uyarısı</b>"]
+        for w in warned:
+            etiket = "trailing" if w["kind"] == "trailing" else "zarar kes"
+            lines.append(
+                f"🟠 <b>{w['symbol']}</b> @ {w['price']:.6g}  "
+                f"kâr={w['pnl_pct']:+.2f}%\n"
+                f"    {etiket} {w['level']:.6g} seviyesine "
+                f"%{w['distance']:.2f} kaldı"
+                + (f"  (zirve {w['peak']:.6g})" if w["kind"] == "trailing" else "")
+            )
+        telegram("\n".join(lines))
+        print(f"Warned on {len(warned)} position(s).")
     else:
         print("No exit triggered.")
 
