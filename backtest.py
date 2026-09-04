@@ -226,7 +226,8 @@ class Params:
     #                bar's low/high and fills at the level. The bot has no
     #                such order; kept only to show the difference.
     guard: str = "off"
-    guard_trailing: bool = True     # let the guard enforce the trailing stop
+    # Mirrors the live setting so a plain `run` simulates the deployed bot.
+    guard_trailing: bool = config.GUARD_ENFORCES_TRAILING
 
 
 def _apply(p: Params) -> None:
@@ -240,6 +241,7 @@ def _apply(p: Params) -> None:
     config.TRAIL_ACTIVATE_PCT = p.trail_activate_pct
     config.MAX_OPEN_POSITIONS = p.max_positions
     config.STOP_COOLDOWN_HOURS = p.stop_cooldown_h
+    config.GUARD_ENFORCES_TRAILING = p.guard_trailing
 
 
 def _cost(price: float, side: str) -> float:
@@ -559,3 +561,4 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
+
