@@ -42,7 +42,7 @@ jobs:
     steps:
       # Shallow checkout, and no setup-python / pip install: guard.py is
       # stdlib-only on purpose so this job stays around 20 seconds.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
