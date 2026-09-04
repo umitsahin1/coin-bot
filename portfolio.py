@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +21,7 @@ def _empty_state() -> dict:
         "initial_capital": config.INITIAL_CAPITAL_USDT,
         "positions": {},      # symbol -> {qty, entry_price, entry_time, peak_price, cost_usdt}
         "trades": [],         # list of {time, side, symbol, qty, price, pnl_usdt, reason}
+        "cooldowns": {},      # symbol -> ISO time until which re-entry is blocked
     }
 
 
@@ -31,7 +32,10 @@ def load() -> dict:
         save(s)
         return s
     with p.open("r") as f:
-        return json.load(f)
+        state = json.load(f)
+    # Forward-compat: states written before cooldowns existed.
+    state.setdefault("cooldowns", {})
+    return state
 
 
 def save(state: dict) -> None:
@@ -43,6 +47,37 @@ def reset() -> dict:
     s = _empty_state()
     save(s)
     return s
+
+
+# --- re-entry cooldown after a stop-out -------------------------------------
+
+def set_cooldown(state: dict, symbol: str, hours: float | None = None) -> None:
+    h = config.STOP_COOLDOWN_HOURS if hours is None else hours
+    until = datetime.now(timezone.utc) + timedelta(hours=h)
+    state.setdefault("cooldowns", {})[symbol] = until.isoformat(timespec="seconds")
+
+
+def cooldown_remaining_h(state: dict, symbol: str) -> float:
+    """Hours left on the block, 0.0 if the symbol is tradable."""
+    raw = state.get("cooldowns", {}).get(symbol)
+    if not raw:
+        return 0.0
+    try:
+        until = datetime.fromisoformat(raw)
+    except ValueError:
+        return 0.0
+    left = (until - datetime.now(timezone.utc)).total_seconds() / 3600.0
+    return max(0.0, left)
+
+
+def is_blocked(state: dict, symbol: str) -> bool:
+    return cooldown_remaining_h(state, symbol) > 0.0
+
+
+def prune_cooldowns(state: dict) -> None:
+    cds = state.get("cooldowns", {})
+    for sym in [s for s in cds if cooldown_remaining_h(state, s) <= 0.0]:
+        del cds[sym]
 
 
 def open_position(state: dict, symbol: str, price: float, alloc_usdt: float, reason: str) -> dict:
@@ -86,6 +121,8 @@ def close_position(state: dict, symbol: str, price: float, reason: str) -> dict:
         "pnl_usdt": pnl, "reason": reason,
     }
     state["trades"].append(trade)
+    if reason.startswith("STOP_LOSS"):
+        set_cooldown(state, symbol)
     return trade
 
 
