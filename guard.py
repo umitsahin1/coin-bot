@@ -102,6 +102,8 @@ def exit_level(pos: dict) -> tuple[float, str]:
     if peak_gain >= config.TRAIL_ACTIVATE_PCT:
         trail = pos["peak_price"] * (1 - config.TRAILING_STOP_PCT)
         if trail > stop:
+            # Still worth warning about even when the guard does not act on
+            # it: the 4h cycle will, at the next close.
             return trail, "trailing"
     return stop, "stop"
 
@@ -147,7 +149,10 @@ def main() -> int:
             reason = f"STOP_LOSS {pnl_pct*100:.2f}%"
         elif config.TAKE_PROFIT_PCT > 0 and pnl_pct >= config.TAKE_PROFIT_PCT:
             reason = f"TAKE_PROFIT {pnl_pct*100:.2f}%"
-        elif portfolio.trailing_stop_hit(pos, price):
+        elif (getattr(config, "GUARD_ENFORCES_TRAILING", True)
+              and portfolio.trailing_stop_hit(pos, price)):
+            # Off by default: see the measurement in config.py. cli.py still
+            # applies the trailing stop at every 4h close.
             reason = f"TRAILING_STOP from peak {pos['peak_price']:.6g}"
 
         if reason:
