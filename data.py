@@ -11,6 +11,7 @@ happens at the boundary inside this module only.
 
 from __future__ import annotations
 
+import re
 from typing import Iterable
 
 import pandas as pd
@@ -28,10 +29,15 @@ _BAR_MAP = {
     "1d": "1D", "1w": "1W", "1M": "1M",
 }
 
-# Suffixes that mark leveraged / structured tokens we want to skip.
-# These match exactly before "USDT" so they don't false-positive on
-# legit coins like JUPUSDT (contains "UP" but ends with "JUPUSDT").
-_LEVERAGE_SUFFIXES = ("2L", "2S", "3L", "3S", "5L", "5S", "UP", "DOWN", "BULL", "BEAR")
+# Leveraged / structured tokens we want to skip.
+#
+# The previous version tested base.endswith(("UP", "DOWN", ...)) and silently
+# ate real coins: "JUP".endswith("UP") and "SUP".endswith("UP") are both True,
+# so Jupiter could never be traded. Leveraged tokens on OKX are always
+# <BASE><MULTIPLIER><L|S>, e.g. BTC3L, ETH5S -- a digit followed by L or S.
+# Binance-style UP/DOWN/BULL/BEAR tokens are matched only when something
+# precedes them, and never when they ARE the whole base.
+_LEVERAGE_RE = re.compile(r"^(?P<base>.+?)(?:[2345][LS]|UP|DOWN|BULL|BEAR)$")
 
 
 _SESSION = requests.Session()
@@ -63,15 +69,27 @@ def _get(path: str, params: dict | None = None, timeout: int = 15) -> dict:
 
 
 def _is_leveraged_token(symbol: str) -> bool:
-    # symbol is in internal form, e.g. BTCUSDT or BTC3LUSDT.
+    """True for BTC3L / ETH5S / XRPUP style wrappers, False for JUP, SUP, PUMP."""
     if not symbol.endswith("USDT"):
         return False
-    base = symbol[:-4]   # e.g. "BTC", "BTC3L", "JUP"
-    return any(base.endswith(suf) for suf in _LEVERAGE_SUFFIXES)
+    base = symbol[:-4]              # e.g. "BTC", "BTC3L", "JUP"
+    m = _LEVERAGE_RE.match(base)
+    if not m:
+        return False
+    # A leveraged token always has a real ticker in front of the wrapper.
+    # "JUP" would match with base="J", which is not a plausible ticker.
+    return len(m.group("base")) >= 2
 
 
 def list_universe() -> list[dict]:
-    """Top-N USDT spot pairs by 24h quote volume."""
+    """Top-N liquid, *moving* USDT spot pairs.
+
+    Two filters beyond liquidity:
+      * ADR (24h high/low range) must clear config.MIN_ADR_PCT. A pair that
+        did not move 4% in a day cannot produce a 7%-stop / 30%-target trade,
+        and this is what keeps stablecoins out without naming them.
+      * config.EXCLUDE_SYMBOLS drops OKX's tokenised US equities.
+    """
     js = _get("/api/v5/market/tickers", {"instType": "SPOT"})
     rows = []
     for t in js.get("data", []):
@@ -79,18 +97,23 @@ def list_universe() -> list[dict]:
         if not inst.endswith("-USDT"):
             continue
         sym = _from_okx(inst)
-        if sym in config.EXCLUDE_STABLES:
+        if sym in config.EXCLUDE_STABLES or sym in config.EXCLUDE_SYMBOLS:
             continue
         if _is_leveraged_token(sym):
             continue
         try:
             qv = float(t.get("volCcy24h", "0") or 0)
             last = float(t.get("last", "0") or 0)
+            hi = float(t.get("high24h", "0") or 0)
+            lo = float(t.get("low24h", "0") or 0)
         except (TypeError, ValueError):
             continue
-        if qv < config.MIN_QUOTE_VOLUME_USDT or last <= 0:
+        if qv < config.MIN_QUOTE_VOLUME_USDT or last <= 0 or lo <= 0:
             continue
-        rows.append({"symbol": sym, "quote_volume": qv, "last": last})
+        adr = (hi - lo) / lo * 100.0
+        if adr < config.MIN_ADR_PCT:
+            continue
+        rows.append({"symbol": sym, "quote_volume": qv, "last": last, "adr": adr})
     rows.sort(key=lambda r: r["quote_volume"], reverse=True)
     return rows[: config.UNIVERSE_SIZE]
 
