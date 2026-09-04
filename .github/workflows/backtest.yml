@@ -1,0 +1,90 @@
+name: backtest
+
+# Manual only. Reads OKX history, never touches state.json, never trades.
+# Results are printed in the log and attached as an artifact.
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "ne yapsin"
+        type: choice
+        default: compare
+        options: [run, compare, sweep, verify, fetch]
+      days:
+        description: "kac gunluk gecmis"
+        default: "180"
+      symbols:
+        description: "kac sembol (hacme gore ilk N)"
+        default: "25"
+      intrabar:
+        description: "1h cozunurluklu guard simulasyonu (run/sweep icin)"
+        type: boolean
+        default: false
+      param:
+        description: "sweep icin parametre, orn BUY_SCORE_MIN"
+        default: ""
+      values:
+        description: "sweep degerleri, virgulle: 50,55,60,65,70"
+        default: ""
+
+permissions:
+  contents: read          # deliberately read-only: this job must not commit
+
+concurrency:
+  group: coin-bot-backtest
+  cancel-in-progress: true
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # OKX history does not change, so downloads are reused across runs.
+      - name: Restore candle cache
+        uses: actions/cache/restore@v4
+        with:
+          path: bt_cache
+          key: okx-candles-${{ github.run_id }}
+          restore-keys: okx-candles-
+
+      # If the fast indicator path ever drifts from the live compute(), every
+      # number below would describe a different strategy. Fail before that.
+      - name: Verify the engine against the live indicators
+        run: python3 test_backtest.py
+
+      - name: Run backtest
+        run: |
+          set -o pipefail
+          ARGS="${{ inputs.command }} --days ${{ inputs.days }} --symbols ${{ inputs.symbols }}"
+          if [ "${{ inputs.intrabar }}" = "true" ]; then ARGS="$ARGS --intrabar"; fi
+          if [ -n "${{ inputs.param }}" ];  then ARGS="$ARGS --param ${{ inputs.param }}"; fi
+          if [ -n "${{ inputs.values }}" ]; then ARGS="$ARGS --values ${{ inputs.values }}"; fi
+          echo "python3 backtest.py $ARGS"
+          python3 backtest.py $ARGS 2>&1 | tee backtest-sonuc.txt
+
+      - name: Save candle cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: bt_cache
+          key: okx-candles-${{ github.run_id }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backtest-sonuc
+          path: backtest-sonuc.txt
+          retention-days: 30
