@@ -45,6 +45,11 @@ REPLACE_MARGIN = 15               # candidate must beat held score by this margi
 ADX_TREND_MIN = 20                # below = no trend, suppress momentum signals
 ADX_STRONG = 25
 
+# guard.py warns once when an open position drifts within this many percent of
+# its nearest downside exit (hard stop, or the trailing level when active).
+# The warning re-arms if price pulls away by more than twice this distance.
+WARN_PROXIMITY_PCT = 1.5
+
 # After a stop-loss on a symbol, refuse to re-enter it for this long. Without
 # it the scanner re-bought the same falling coin hours later (ALLOUSDT went
 # through 9 round trips in 8 days).
