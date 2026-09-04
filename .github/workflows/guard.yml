@@ -1,0 +1,79 @@
+name: guard
+
+# Fast stop-loss / take-profit / trailing check against the LIVE ticker.
+#
+# paper-trade only runs every 4h and prices off the last closed 4h candle, so
+# a -7% stop was realising at -10.56% on average and -20.29% at worst. This
+# job re-checks the hard exit rules in between. It does no scoring and opens
+# no positions.
+#
+# Runner-minute budget (private repo = 2,000 free min/month, each job billed
+# rounded up to the minute):
+#     guard  */30  -> 48 runs/day  x ~1 min  = ~1,440 min/month
+#     trade  6/day        x ~2 min           =   ~360 min/month
+#                                             ---------------------
+#                                              ~1,800 of 2,000
+# That is ~90% of the allowance. To tighten to */15 (~2,880 min) either make
+# the repository public (public repos get unlimited free Actions minutes and
+# this one holds no secrets in code) or move to a paid plan.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Shared with paper-trade: the two jobs must never write state.json at the
+# same time. A queued run waits for the running one to finish and checks out
+# the already-updated state.
+concurrency:
+  group: coin-bot-state
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+    steps:
+      # Shallow checkout, and no setup-python / pip install: guard.py is
+      # stdlib-only on purpose so this job stays around 20 seconds.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run guard
+        run: python3 guard.py
+
+      - name: Commit updated state
+        run: |
+          set -euo pipefail
+          git config user.name  "coin-bot"
+          git config user.email "coin-bot@users.noreply.github.com"
+          if git diff --quiet -- state.json; then
+            echo "No state changes."
+            exit 0
+          fi
+          git add state.json
+          git commit -m "guard: $(date -u +'%Y-%m-%d %H:%MZ') exit"
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push rejected, rebasing (attempt $attempt)"
+            if ! git pull --rebase --autostash origin "${GITHUB_REF_NAME}"; then
+              # Do not guess a winner for state.json: a bad merge would
+              # invent or erase a trade. Fail loudly instead.
+              git rebase --abort || true
+              echo "::error::state.json rebase conflict — resolve by hand"
+              exit 1
+            fi
+            sleep $((RANDOM % 5 + 2))
+          done
+          echo "::error::push failed after 3 attempts"
+          exit 1
