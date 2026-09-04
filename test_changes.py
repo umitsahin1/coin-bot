@@ -144,9 +144,22 @@ def test_guard() -> None:
     st = run({"BBBUSDT": 13.5})
     check("+35% takes profit", "BBBUSDT" not in st["positions"])
 
+    # Trailing is deliberately NOT enforced by the guard (config.py explains
+    # the measurement). It must hold, and cli.py exits it at the 4h close.
     _fresh({"CCCUSDT": (1.0, 1.12, 500.0)})
     st = run({"CCCUSDT": 1.04})
-    check("7% off the peak trails out", "CCCUSDT" not in st["positions"])
+    check("guard does not trail out (left to the 4h cycle)",
+          "CCCUSDT" in st["positions"])
+    check("but the peak is still tracked",
+          abs(st["positions"]["CCCUSDT"]["peak_price"] - 1.12) < 1e-9)
+
+    saved = config.GUARD_ENFORCES_TRAILING
+    config.GUARD_ENFORCES_TRAILING = True
+    _fresh({"CCCUSDT": (1.0, 1.12, 500.0)})
+    st = run({"CCCUSDT": 1.04})
+    config.GUARD_ENFORCES_TRAILING = saved
+    check("...and still trails out when the flag is on",
+          "CCCUSDT" not in st["positions"])
 
     _fresh({"DDDUSDT": (1.0, 1.0, 500.0)})
     st = run({})                      # price fetch returns None
