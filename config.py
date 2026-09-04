@@ -13,14 +13,30 @@ TRAILING_STOP_PCT = 0.07         # sell when price drops 7% from peak
 TRAIL_ACTIVATE_PCT = 0.07        # trailing kicks in once peak >= +7%
 
 # --- Market & data ---
-EXCHANGE_BASE = "https://api.binance.com"
+EXCHANGE_BASE = "https://api.binance.com"   # unused; data.py talks to OKX
 QUOTE_ASSET = "USDT"
 TIMEFRAME = "4h"
 KLINE_LIMIT = 200                # ~33 days of 4h bars, enough for ADX/MA200 ~ish
 UNIVERSE_SIZE = 50               # top N USDT pairs by 24h quote volume
-MIN_QUOTE_VOLUME_USDT = 10_000_000
+MIN_QUOTE_VOLUME_USDT = 3_000_000
 EXCLUDE_QUOTES = ("UPUSDT", "DOWNUSDT", "BULLUSDT", "BEARUSDT")  # leveraged tokens
 EXCLUDE_STABLES = ("USDCUSDT", "BUSDUSDT", "TUSDUSDT", "FDUSDUSDT", "DAIUSDT", "USDPUSDT")
+
+# A coin that cannot move cannot pay. ADR = (24h high - 24h low) / 24h low.
+# At 4% this also removes every stablecoin and tokenised-metal pair for free
+# (USDG/RLUSD/USDC sit at 0.0%, XAUT/PAXG around 2.6%), which is why they are
+# not repeated in a deny-list below.
+MIN_ADR_PCT = 4.0
+
+# OKX lists tokenised US equities as X<TICKER>-USDT. They follow stock-market
+# hours, gap over weekends, and are not what this bot is modelling, so they are
+# excluded by name. A regex is not safe here: real crypto shares the shape
+# (XRP, XLM, XPL) and XMU is Micron. Re-check this list when OKX adds more.
+EXCLUDE_SYMBOLS = frozenset({
+    "XMRVLUSDT", "XHOODUSDT", "XSPCXUSDT", "XSKHYUSDT", "XINTCUSDT",
+    "XMSTRUSDT", "XMUUSDT", "XAVGOUSDT", "XTSLAUSDT", "XCBRSUSDT",
+    "XCRCLUSDT", "XLITEUSDT", "XSNDKUSDT", "XSOXLUSDT",
+})
 
 # --- Strategy thresholds ---
 BUY_SCORE_MIN = 60               # 0..100; need >= this to enter
@@ -28,6 +44,11 @@ HOLD_SCORE_MIN = 45               # below this on a held coin -> sell candidate
 REPLACE_MARGIN = 15               # candidate must beat held score by this margin to replace
 ADX_TREND_MIN = 20                # below = no trend, suppress momentum signals
 ADX_STRONG = 25
+
+# After a stop-loss on a symbol, refuse to re-enter it for this long. Without
+# it the scanner re-bought the same falling coin hours later (ALLOUSDT went
+# through 9 round trips in 8 days).
+STOP_COOLDOWN_HOURS = 24
 
 # --- Files ---
 PROJECT_DIR = Path(__file__).resolve().parent
