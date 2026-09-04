@@ -1099,5 +1099,6 @@
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=75 BUY"
     }
-  ]
+  ],
+  "cooldowns": {}
 }
