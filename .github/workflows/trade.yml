@@ -10,8 +10,10 @@ on:
 permissions:
   contents: write           # needed to commit state.json back
 
+# Shared with guard.yml: the two jobs must never write state.json at the
+# same time.
 concurrency:
-  group: paper-trade
+  group: coin-bot-state
   cancel-in-progress: false
 
 jobs:
@@ -39,12 +41,27 @@ jobs:
 
       - name: Commit updated state
         run: |
+          set -euo pipefail
           git config user.name  "coin-bot"
           git config user.email "coin-bot@users.noreply.github.com"
-          if ! git diff --quiet -- state.json; then
-            git add state.json
-            git commit -m "auto: $(date -u +'%Y-%m-%d %H:%MZ') run"
-            git push
-          else
+          if git diff --quiet -- state.json; then
             echo "No state changes."
+            exit 0
           fi
+          git add state.json
+          git commit -m "auto: $(date -u +'%Y-%m-%d %H:%MZ') run"
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push rejected, rebasing (attempt $attempt)"
+            if ! git pull --rebase --autostash origin "${GITHUB_REF_NAME}"; then
+              git rebase --abort || true
+              echo "::error::state.json rebase conflict — resolve by hand"
+              exit 1
+            fi
+            sleep $((RANDOM % 5 + 2))
+          done
+          echo "::error::push failed after 3 attempts"
+          exit 1
