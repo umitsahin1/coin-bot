@@ -164,6 +164,66 @@ def test_guard() -> None:
 
 
 # --------------------------------------------------------------------------
+def test_proximity_warning() -> None:
+    print("\n=== guard: proximity warning ===")
+    import guard
+
+    sent: list[str] = []
+    guard.telegram = lambda text: (sent.append(text), True)[1]
+
+    def run(prices: dict) -> dict:
+        guard.fetch_last_price = lambda s: prices.get(s)
+        guard.main()
+        return portfolio.load()
+
+    # entry 100 -> hard stop at 93. Peak never cleared +7%, so trailing is off.
+    lvl, kind = guard.exit_level({"entry_price": 100.0, "peak_price": 102.0})
+    check("stop is the level before trailing activates",
+          abs(lvl - 93.0) < 1e-9 and kind == "stop")
+
+    # peak 120 (+20%) -> trailing at 111.6, which is above the 93 stop.
+    lvl, kind = guard.exit_level({"entry_price": 100.0, "peak_price": 120.0})
+    check("trailing takes over once it is above the stop",
+          abs(lvl - 111.6) < 1e-9 and kind == "trailing")
+
+    # 93.9 is 0.96% above the 93 stop -> inside the 1.5% band.
+    _fresh({"AAAUSDT": (100.0, 100.0, 500.0)})
+    sent.clear()
+    st = run({"AAAUSDT": 93.9})
+    check("warns near the stop", len(sent) == 1 and "Yaklaşma" in sent[0])
+    check("position stays open", "AAAUSDT" in st["positions"])
+    check("warned level recorded", "warned_level" in st["positions"]["AAAUSDT"])
+
+    # Same price again -> no second message for the same level.
+    sent.clear()
+    st = run({"AAAUSDT": 93.85})
+    check("does not repeat at the same level", not sent)
+
+    # Price pulls clear (>3% away) -> warning re-arms.
+    sent.clear()
+    st = run({"AAAUSDT": 97.0})
+    check("re-arms when price pulls away",
+          "warned_level" not in st["positions"]["AAAUSDT"])
+
+    # Approaching again warns a second time.
+    sent.clear()
+    st = run({"AAAUSDT": 93.8})
+    check("warns again on a second approach", len(sent) == 1)
+
+    # Comfortably far -> silence.
+    _fresh({"BBBUSDT": (100.0, 100.0, 500.0)})
+    sent.clear()
+    st = run({"BBBUSDT": 99.0})
+    check("silent when far from the level", not sent)
+
+    # A real exit must send the sale message, never the warning.
+    _fresh({"CCCUSDT": (100.0, 100.0, 500.0)})
+    sent.clear()
+    st = run({"CCCUSDT": 92.0})
+    check("selling sends the exit message, not a warning",
+          len(sent) == 1 and "Hızlı Çıkış" in sent[0])
+
+
 def main() -> int:
     config.STATE_FILE = pathlib.Path(tempfile.mkdtemp()) / "state.json"
 
@@ -175,6 +235,7 @@ def main() -> int:
 
     test_cooldown()
     test_guard()
+    test_proximity_warning()
 
     print()
     if FAILED:
@@ -186,3 +247,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
