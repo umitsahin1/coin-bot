@@ -215,7 +215,18 @@ class Params:
     trail_activate_pct: float = config.TRAIL_ACTIVATE_PCT
     max_positions: int = config.MAX_OPEN_POSITIONS
     stop_cooldown_h: float = config.STOP_COOLDOWN_HOURS
-    intrabar: bool = False          # simulate the 30-min guard using 1h bars
+
+    # How the between-4h-closes guard is modelled:
+    #   "off"     -- no guard; exits only at 4h closes (the pre-guard bot)
+    #   "poll"    -- what guard.py really does: read the last price every
+    #                sample, act on it. Peak and triggers use sampled prices,
+    #                fills happen at that price. 1h bars under-sample the real
+    #                30-minute cadence, so this is mildly conservative.
+    #   "resting" -- as if a stop order sat on the exchange: triggers on the
+    #                bar's low/high and fills at the level. The bot has no
+    #                such order; kept only to show the difference.
+    guard: str = "off"
+    guard_trailing: bool = True     # let the guard enforce the trailing stop
 
 
 def _apply(p: Params) -> None:
@@ -291,8 +302,8 @@ def run(bars: dict[str, pd.DataFrame], snaps: dict[str, list],
                     if int(t) > warm})
 
     for t in times:
-        # ---- 1. intrabar hard exits (what the 30-minute guard would catch)
-        if p.intrabar:
+        # ---- 1. between 4h closes: what the guard would have caught
+        if p.guard != "off":
             for sym in list(state["positions"]):
                 rows = hbars.get(sym)
                 if not rows:
@@ -300,18 +311,35 @@ def run(bars: dict[str, pd.DataFrame], snaps: dict[str, list],
                 i = hpos[sym]
                 while i < len(rows) and rows[i]["open_time"] < t - 4 * 3600_000:
                     i += 1
+                hpos[sym] = i
                 j = i
                 while j < len(rows) and rows[j]["open_time"] < t:
                     pos = state["positions"].get(sym)
                     if pos is None:
                         break
                     b = rows[j]
+                    j += 1
+
+                    if p.guard == "poll":
+                        # guard.py sees one price per check, nothing else.
+                        px = float(b["close"])
+                        portfolio.update_peak(state, sym, px)
+                        why = _hard_exit(pos, px)
+                        if why and (p.guard_trailing or "TRAILING" not in why):
+                            portfolio.close_position(
+                                state, sym, _cost(px, "sell"), why)
+                            break
+                        continue
+
+                    # "resting": a stop order living on the exchange
                     stop, tp = _levels(pos)
-                    if float(b["low"]) <= stop:                 # adverse first
+                    if not p.guard_trailing:
+                        stop = pos["entry_price"] * (1 + config.STOP_LOSS_PCT)
+                    if float(b["low"]) <= stop:
                         px = _exit_fill(b, stop, True)
-                        why = _hard_exit(pos, px) or f"STOP_LOSS forced"
-                        portfolio.close_position(state, sym,
-                                                 _cost(px, "sell"), why)
+                        portfolio.close_position(
+                            state, sym, _cost(px, "sell"),
+                            _hard_exit(pos, px) or "STOP_LOSS forced")
                         break
                     portfolio.update_peak(state, sym, float(b["high"]))
                     if float(b["high"]) >= tp:
@@ -320,8 +348,6 @@ def run(bars: dict[str, pd.DataFrame], snaps: dict[str, list],
                             state, sym, _cost(px, "sell"),
                             f"TAKE_PROFIT {portfolio.position_pnl_pct(pos, px)*100:.2f}%")
                         break
-                    j += 1
-                hpos[sym] = i
 
         # ---- 2. the 4h close: score, hard exits, then signal exits
         scores = {}
@@ -472,7 +498,7 @@ def main(argv: list[str]) -> int:
 
     syms = pick_universe(a.symbols)
     print(f"Evren ({len(syms)}): {', '.join(s[:-4] for s in syms)}\n")
-    need_hourly = a.intrabar or a.cmd == "compare"
+    need_hourly = a.intrabar or a.cmd == "compare"   # 1h bars for the guard
     bars, snaps, hourly = load_all(syms, a.days, need_hourly)
     if not bars:
         print("Veri yok."); return 1
@@ -492,14 +518,23 @@ def main(argv: list[str]) -> int:
         return 0 if ok else 1
 
     if a.cmd == "run":
-        m = run(bars, snaps, hourly, Params(intrabar=a.intrabar))
+        m = run(bars, snaps, hourly,
+                Params(guard="poll" if a.intrabar else "off"))
         print(HDR); print(line("varsayilan", m))
         return 0
 
     if a.cmd == "compare":
         print(HDR)
-        print(line("4h cikislar (eski)", run(bars, snaps, hourly, Params(intrabar=False))))
-        print(line("guard (1h cozunurluk)", run(bars, snaps, hourly, Params(intrabar=True))))
+        print(line("guard yok (4h)", run(bars, snaps, hourly, Params(guard="off"))))
+        print(line("guard poll (gercek)",
+                   run(bars, snaps, hourly, Params(guard="poll"))))
+        print(line("guard poll, trailsiz",
+                   run(bars, snaps, hourly,
+                       Params(guard="poll", guard_trailing=False))))
+        print(line("guard resting (kurgu)",
+                   run(bars, snaps, hourly, Params(guard="resting"))))
+        print("\nnot: 'resting' borsada duran stop emri varsayar -- bot oyle "
+              "calismiyor,\n     sadece fark gorulsun diye duruyor.")
         return 0
 
     if a.cmd == "sweep":
@@ -514,7 +549,8 @@ def main(argv: list[str]) -> int:
         for raw in a.values.split(","):
             val = typ(raw) if typ is not bool else raw.lower() == "true"
             m = run(bars, snaps, hourly,
-                    replace(Params(intrabar=a.intrabar), **{field: val}))
+                    replace(Params(guard="poll" if a.intrabar else "off"),
+                            **{field: val}))
             print(line(f"{a.param}={raw}", m))
         return 0
 
