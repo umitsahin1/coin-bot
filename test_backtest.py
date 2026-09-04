@@ -162,8 +162,9 @@ def test_guard_reduces_stop_overshoot() -> None:
     # comparison over zero stop exits would prove nothing.
     bars, snaps, hourly = _dataset(range(8), vol=0.022, drift=-0.0004)
 
-    slow = backtest.run(bars, snaps, hourly, backtest.Params(intrabar=False))
-    fast = backtest.run(bars, snaps, hourly, backtest.Params(intrabar=True))
+    slow = backtest.run(bars, snaps, hourly, backtest.Params(guard="off"))
+    fast = backtest.run(bars, snaps, hourly, backtest.Params(guard="poll"))
+    rest = backtest.run(bars, snaps, hourly, backtest.Params(guard="resting"))
 
     def avg_stop(m):
         xs = m["stop_exits"]          # already in percent
@@ -185,15 +186,25 @@ def test_guard_reduces_stop_overshoot() -> None:
     # markets. Use `backtest.py compare` on OKX history for that question.
     target = config.STOP_LOSS_PCT * 100
     precise = lambda xs: [x for x in xs if abs(x - target) < 0.10]
-    pf, ps = precise(fast["stop_exits"]), precise(slow["stop_exits"])
-    check("guard exits some stops exactly at the level",
-          len(pf) > 0, f"({len(pf)}/{len(fast['stop_exits'])})")
-    check("4h-only mode can never be that precise",
-          len(ps) == 0, f"({len(ps)} tam isabet, en yakin "
-                        f"{max(slow['stop_exits']):+.2f}%)")
-    print(f"    ort: 4h {s_slow:+.2f}%  guard {s_fast:+.2f}%")
-    print("    not: sentetik seri bagimsiz adimlardan olusuyor, sureklilik yok;")
-    print("         guard'in ortalama faydasi ancak gercek veride olculur.")
+
+    # "poll" is the honest model: guard.py reads one price per check, so it
+    # can never fill exactly on the level. Only a resting exchange order can.
+    check("poll mode never fills exactly at the level",
+          len(precise(fast["stop_exits"])) == 0,
+          "(gercek guard emir birakmaz, fiyata bakar)")
+    check("resting mode does fill at the level",
+          len(precise(rest["stop_exits"])) > 0,
+          f"({len(precise(rest['stop_exits']))}/{len(rest['stop_exits'])})")
+    check("all three modes produced stop exits",
+          min(len(slow["stop_exits"]), len(fast["stop_exits"]),
+              len(rest["stop_exits"])) >= 3)
+    r_avg = sum(rest["stop_exits"]) / max(1, len(rest["stop_exits"]))
+    print(f"    ort stop: 4h {s_slow:+.2f}%  poll {s_fast:+.2f}%  "
+          f"resting {r_avg:+.2f}%")
+    print("    not: hangisinin ortalamada iyi oldugu SENTETIK veriyle")
+    print("         cevaplanamaz -- bu seri bagimsiz adimlardan olusuyor,")
+    print("         oysa 4h gecikmeyi pahali yapan sey trendin surmesi.")
+    print("         Karar icin: backtest.py compare (gercek OKX gecmisi).")
 
 
 def test_sweep_changes_results() -> None:
