@@ -84,8 +84,18 @@ def _do_scan(state: dict) -> tuple[list[dict], list[Score]]:
         print(f"\nAll {config.MAX_OPEN_POSITIONS} slots filled.")
         return actions, scores[:5]
 
-    candidates = [s for s in scores if s.symbol not in state["positions"]
-                  and s.score >= config.BUY_SCORE_MIN][:open_slots]
+    eligible, blocked = [], []
+    for sc in scores:
+        if sc.symbol in state["positions"] or sc.score < config.BUY_SCORE_MIN:
+            continue
+        left = portfolio.cooldown_remaining_h(state, sc.symbol)
+        if left > 0:
+            blocked.append((sc, left))
+            continue
+        eligible.append(sc)
+    for sc, left in blocked:
+        print(f"  skip {sc.symbol}: stop-loss cooldown, {left:.1f}h left")
+    candidates = eligible[:open_slots]
     if not candidates:
         print(f"\nNo candidate scored >= {config.BUY_SCORE_MIN}. No trades.")
         return actions, scores[:5]
@@ -189,6 +199,10 @@ def _do_check(state: dict) -> list[dict]:
             if sc.score < config.BUY_SCORE_MIN:
                 continue
             if held_min and sc.score < held_min + config.REPLACE_MARGIN:
+                continue
+            left = portfolio.cooldown_remaining_h(state, sc.symbol)
+            if left > 0:
+                print(f"  skip {sc.symbol}: stop-loss cooldown, {left:.1f}h left")
                 continue
             cands.append(sc)
             if len(cands) >= open_slots:
@@ -317,6 +331,7 @@ def cmd_scan() -> int:
     print(f"=== SCAN ===  cash={_fmt_money(state['cash'])}  "
           f"holding={list(state['positions'].keys()) or 'none'}")
     actions, top = _do_scan(state)
+    portfolio.prune_cooldowns(state)
     portfolio.save(state)
     eq = _print_status_short(state)
     msg = _format_telegram(actions, eq, top_scores=top)
@@ -332,6 +347,7 @@ def cmd_check() -> int:
         return 0
     print("=== CHECK ===")
     actions = _do_check(state)
+    portfolio.prune_cooldowns(state)
     portfolio.save(state)
     eq = _print_status_short(state)
     msg = _format_telegram(actions, eq)
@@ -352,6 +368,7 @@ def cmd_auto() -> int:
     else:
         print("=== AUTO (check) ===")
         actions = _do_check(state)
+    portfolio.prune_cooldowns(state)
     portfolio.save(state)
     eq = _print_status_short(state)
     msg = _format_telegram(actions, eq, top_scores=top)
@@ -386,6 +403,12 @@ def cmd_status() -> int:
                   f"pnl={_fmt_money(p['pnl_usdt'])} ({_fmt_pct(p['pnl_pct'])})")
     else:
         print("\n  no open positions.")
+    cds = {k: portfolio.cooldown_remaining_h(state, k) for k in state.get("cooldowns", {})}
+    cds = {k: v for k, v in cds.items() if v > 0}
+    if cds:
+        print("\n  cooldown (no re-entry):")
+        for sym, left in sorted(cds.items(), key=lambda kv: -kv[1]):
+            print(f"    {sym:<12} {left:.1f}h left")
     trades = state["trades"]
     if trades:
         print(f"\n  recent trades ({min(len(trades), 8)} of {len(trades)}):")
