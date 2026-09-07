@@ -7,14 +7,14 @@
       "qty": 1497.684209323091,
       "entry_price": 0.4538,
       "entry_time": "2026-09-07T17:28:44+00:00",
-      "peak_price": 0.4538,
+      "peak_price": 0.4636,
       "cost_usdt": 680.3294236144332
     },
     "DOTUSDT": {
       "qty": 630.355309025059,
       "entry_price": 1.0782,
       "entry_time": "2026-09-07T17:28:44+00:00",
-      "peak_price": 1.0782,
+      "peak_price": 1.0996,
       "cost_usdt": 680.3294236144332
     }
   },
