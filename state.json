@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 625.0904569723655,
   "initial_capital": 1000.0,
   "positions": {
-    "RAYUSDT": {
-      "qty": 504.3657691000412,
-      "entry_price": 1.3797,
-      "entry_time": "2026-09-09T16:07:57+00:00",
-      "peak_price": 1.3797,
-      "cost_usdt": 696.5700216489757
-    },
     "KATUSDT": {
       "qty": 120226.92668060241,
       "entry_price": 0.005788,
@@ -1178,7 +1171,19 @@
       "fee_usdt": 0.6965700216489757,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=69 WEAK_BUY"
+    },
+    {
+      "time": "2026-09-09T21:49:43+00:00",
+      "side": "SELL",
+      "symbol": "RAYUSDT",
+      "qty": 504.3657691000412,
+      "price": 1.2406,
+      "fee_usdt": 0.625716173145511,
+      "pnl_usdt": -71.47956467661027,
+      "reason": "STOP_LOSS -10.08%"
     }
   ],
-  "cooldowns": {}
+  "cooldowns": {
+    "RAYUSDT": "2026-09-10T21:49:43+00:00"
+  }
 }
