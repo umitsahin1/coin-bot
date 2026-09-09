@@ -1,15 +1,21 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 677.7724958765369,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
-    "DOTUSDT": {
-      "qty": 630.355309025059,
-      "entry_price": 1.0782,
-      "entry_time": "2026-09-07T17:28:44+00:00",
-      "peak_price": 1.2512,
-      "cost_usdt": 680.3294236144332,
-      "warned_level": 1.163616
+    "RAYUSDT": {
+      "qty": 504.3657691000412,
+      "entry_price": 1.3797,
+      "entry_time": "2026-09-09T16:07:57+00:00",
+      "peak_price": 1.3797,
+      "cost_usdt": 696.5700216489757
+    },
+    "KATUSDT": {
+      "qty": 120226.92668060241,
+      "entry_price": 0.005788,
+      "entry_time": "2026-09-09T16:07:57+00:00",
+      "peak_price": 0.005788,
+      "cost_usdt": 696.5700216489757
     }
   },
   "trades": [
@@ -1142,6 +1148,36 @@
       "fee_usdt": 0.6784509468233603,
       "pnl_usdt": -2.556927737896217,
       "reason": "TRAILING_STOP from peak 0.4872"
+    },
+    {
+      "time": "2026-09-09T16:07:51+00:00",
+      "side": "SELL",
+      "symbol": "DOTUSDT",
+      "qty": 630.355309025059,
+      "price": 1.136,
+      "fee_usdt": 0.716083631052467,
+      "pnl_usdt": 35.03812380698139,
+      "reason": "TRAILING_STOP from peak 1.2512"
+    },
+    {
+      "time": "2026-09-09T16:07:57+00:00",
+      "side": "BUY",
+      "symbol": "RAYUSDT",
+      "qty": 504.3657691000412,
+      "price": 1.3797,
+      "fee_usdt": 0.6965700216489757,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=79 BUY"
+    },
+    {
+      "time": "2026-09-09T16:07:57+00:00",
+      "side": "BUY",
+      "symbol": "KATUSDT",
+      "qty": 120226.92668060241,
+      "price": 0.005788,
+      "fee_usdt": 0.6965700216489757,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=69 WEAK_BUY"
     }
   ],
   "cooldowns": {}
