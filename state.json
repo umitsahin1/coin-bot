@@ -1,8 +1,23 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 1234.7520649232724,
+  "cash": 0.0,
   "initial_capital": 1000.0,
-  "positions": {},
+  "positions": {
+    "APTUSDT": {
+      "qty": 987.1297318008557,
+      "entry_price": 0.6248,
+      "entry_time": "2026-09-10T08:44:24+00:00",
+      "peak_price": 0.6248,
+      "cost_usdt": 617.3760324616362
+    },
+    "STRKUSDT": {
+      "qty": 20759.295066616447,
+      "entry_price": 0.02971,
+      "entry_time": "2026-09-10T08:44:24+00:00",
+      "peak_price": 0.02971,
+      "cost_usdt": 617.3760324616362
+    }
+  },
   "trades": [
     {
       "time": "2026-05-16T13:27:23+00:00",
@@ -1183,6 +1198,26 @@
       "fee_usdt": 0.6102718798307378,
       "pnl_usdt": -86.90841369806867,
       "reason": "STOP_LOSS -12.30%"
+    },
+    {
+      "time": "2026-09-10T08:44:24+00:00",
+      "side": "BUY",
+      "symbol": "APTUSDT",
+      "qty": 987.1297318008557,
+      "price": 0.6248,
+      "fee_usdt": 0.6173760324616362,
+      "pnl_usdt": 0.0,
+      "reason": "score=68 WEAK_BUY"
+    },
+    {
+      "time": "2026-09-10T08:44:24+00:00",
+      "side": "BUY",
+      "symbol": "STRKUSDT",
+      "qty": 20759.295066616447,
+      "price": 0.02971,
+      "fee_usdt": 0.6173760324616362,
+      "pnl_usdt": 0.0,
+      "reason": "score=68 WEAK_BUY"
     }
   ],
   "cooldowns": {
