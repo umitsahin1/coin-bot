@@ -1220,7 +1220,5 @@
       "reason": "score=68 WEAK_BUY"
     }
   ],
-  "cooldowns": {
-    "KATUSDT": "2026-09-11T08:19:38+00:00"
-  }
+  "cooldowns": {}
 }
