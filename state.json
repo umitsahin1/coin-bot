@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 598.4899451957094,
   "initial_capital": 1000.0,
   "positions": {
-    "APTUSDT": {
-      "qty": 987.1297318008557,
-      "entry_price": 0.6248,
-      "entry_time": "2026-09-10T08:44:24+00:00",
-      "peak_price": 0.6546,
-      "cost_usdt": 617.3760324616362
-    },
     "STRKUSDT": {
       "qty": 20759.295066616447,
       "entry_price": 0.02971,
@@ -1218,6 +1211,16 @@
       "fee_usdt": 0.6173760324616362,
       "pnl_usdt": 0.0,
       "reason": "score=68 WEAK_BUY"
+    },
+    {
+      "time": "2026-09-11T16:03:59+00:00",
+      "side": "SELL",
+      "symbol": "APTUSDT",
+      "qty": 987.1297318008557,
+      "price": 0.6069,
+      "fee_usdt": 0.5990890342299393,
+      "pnl_usdt": -18.88608726592679,
+      "reason": "signal=NEUTRAL score=42"
     }
   ],
   "cooldowns": {}
