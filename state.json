@@ -1,6 +1,6 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 598.4899451957094,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
     "STRKUSDT": {
@@ -9,6 +9,13 @@
       "entry_time": "2026-09-10T08:44:24+00:00",
       "peak_price": 0.02987,
       "cost_usdt": 617.3760324616362
+    },
+    "RAYUSDT": {
+      "qty": 358.27627951253214,
+      "entry_price": 1.6688,
+      "entry_time": "2026-09-12T03:40:15+00:00",
+      "peak_price": 1.6688,
+      "cost_usdt": 598.4899451957094
     }
   },
   "trades": [
@@ -1221,6 +1228,16 @@
       "fee_usdt": 0.5990890342299393,
       "pnl_usdt": -18.88608726592679,
       "reason": "signal=NEUTRAL score=42"
+    },
+    {
+      "time": "2026-09-12T03:40:15+00:00",
+      "side": "BUY",
+      "symbol": "RAYUSDT",
+      "qty": 358.27627951253214,
+      "price": 1.6688,
+      "fee_usdt": 0.5984899451957094,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=78 BUY"
     }
   ],
   "cooldowns": {}
