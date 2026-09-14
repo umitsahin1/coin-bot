@@ -1,15 +1,8 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 0.0,
+  "cash": 580.2642308879643,
   "initial_capital": 1000.0,
   "positions": {
-    "STRKUSDT": {
-      "qty": 20759.295066616447,
-      "entry_price": 0.02971,
-      "entry_time": "2026-09-10T08:44:24+00:00",
-      "peak_price": 0.02987,
-      "cost_usdt": 617.3760324616362
-    },
     "FILUSDT": {
       "qty": 665.0067559993369,
       "entry_price": 0.8191,
@@ -1258,6 +1251,16 @@
       "fee_usdt": 0.5452522861251821,
       "pnl_usdt": 0.0,
       "reason": "REPLACE score=68 WEAK_BUY"
+    },
+    {
+      "time": "2026-09-14T03:55:21+00:00",
+      "side": "SELL",
+      "symbol": "STRKUSDT",
+      "qty": 20759.295066616447,
+      "price": 0.02798,
+      "fee_usdt": 0.5808450759639283,
+      "pnl_usdt": -37.11180157367187,
+      "reason": "signal=WEAK_SELL score=39"
     }
   ],
   "cooldowns": {}
