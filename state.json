@@ -15,7 +15,8 @@
       "entry_price": 0.9358,
       "entry_time": "2026-09-15T03:55:12+00:00",
       "peak_price": 0.9358,
-      "cost_usdt": 600.9776199149399
+      "cost_usdt": 600.9776199149399,
+      "warned_level": 0.8702939999999999
     }
   },
   "trades": [
