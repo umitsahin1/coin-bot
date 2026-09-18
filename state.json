@@ -1,6 +1,6 @@
 {
   "created_at": "2026-05-16T11:28:26+00:00",
-  "cash": 776.729581985026,
+  "cash": 0.0,
   "initial_capital": 1000.0,
   "positions": {
     "ZECUSDT": {
@@ -9,6 +9,13 @@
       "entry_time": "2026-09-16T16:22:08+00:00",
       "peak_price": 1516.72,
       "cost_usdt": 553.7279489124089
+    },
+    "OPUSDT": {
+      "qty": 6994.34696595494,
+      "entry_price": 0.11094,
+      "entry_time": "2026-09-18T16:00:50+00:00",
+      "peak_price": 0.11094,
+      "cost_usdt": 776.729581985026
     }
   },
   "trades": [
@@ -1341,6 +1348,16 @@
       "fee_usdt": 0.7775070890741002,
       "pnl_usdt": 223.0016330726171,
       "reason": "TAKE_PROFIT 40.55%"
+    },
+    {
+      "time": "2026-09-18T16:00:50+00:00",
+      "side": "BUY",
+      "symbol": "OPUSDT",
+      "qty": 6994.34696595494,
+      "price": 0.11094,
+      "fee_usdt": 0.7767295819850261,
+      "pnl_usdt": 0.0,
+      "reason": "REPLACE score=75 BUY"
     }
   ],
   "cooldowns": {}
